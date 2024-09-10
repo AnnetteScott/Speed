@@ -24,7 +24,7 @@ export class ArticleService {
 	}
 
 	async delete(id: string) {
-		const deletedBook = await this.articleModel.findByIdAndDelete(id).exec();
-		return deletedBook;
+		const deletedArticle = await this.articleModel.findByIdAndDelete(id).exec();
+		return deletedArticle;
 	}
 }

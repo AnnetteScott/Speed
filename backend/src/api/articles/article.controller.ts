@@ -23,7 +23,7 @@ export class ArticleController {
 		}
 	}
 
-	// Get one book via id
+	// Get one article via doi
 	@Get('/:doi')
 	async findOne(@Param('doi') doi: string) {
 		try {
@@ -39,7 +39,7 @@ export class ArticleController {
 
 	// Add an article
 	@Post('/')
-	async addBook(@Body() articleDTO: ArticleDTO) {
+	async addArticle(@Body() articleDTO: ArticleDTO) {
 		try {
 			await this.articleService.create(articleDTO);
 			return { message: 'Article added successfully' };
@@ -54,7 +54,7 @@ export class ArticleController {
 
 	// Update an Article
 	@Put('/:doi')
-	async updateBook(@Param('doi') doi: string, @Body() articleDTO: ArticleDTO) {
+	async updateArticle(@Param('doi') doi: string, @Body() articleDTO: ArticleDTO) {
 		try {
 			await this.articleService.update(doi, articleDTO);
 			return { message: 'Article updated successfully' };
@@ -69,12 +69,12 @@ export class ArticleController {
 
 	// Delete an Article via doi
 	@Delete('/:doi')
-	async deleteBook(@Param('doi') doi: string) {
+	async deleteArticle(@Param('doi') doi: string) {
 		try {
 			return await await this.articleService.delete(doi);
 		} catch {
 			throw new HttpException(
-				{status: HttpStatus.NOT_FOUND, error: 'No such a book'},
+				{status: HttpStatus.NOT_FOUND, error: 'No such a article'},
 				HttpStatus.NOT_FOUND,
 				{ cause: error },
 			);
