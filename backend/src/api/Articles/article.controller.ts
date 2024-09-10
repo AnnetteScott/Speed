@@ -5,11 +5,11 @@ import { ArticleService } from './article.service';
 import ArticleDTO from './article.dto';
 import { error } from 'console';
   
-@Controller('api/books')
+@Controller('api/articles')
 export class ArticleController {
 	constructor(private readonly articleService: ArticleService) {}
 
-	// Get all books
+	// Get all Articles
 	@Get('/')
 	async findAll() {
 		try {
