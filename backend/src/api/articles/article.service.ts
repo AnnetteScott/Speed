@@ -12,7 +12,7 @@ export class ArticleService {
 	}
 
 	async findOne(doi: string): Promise<Article> {
-		return await this.articleModel.findById(doi).exec();
+		return await this.articleModel.findOne({doi: doi}).exec();
 	}
 
 	async create(articleDTO: ArticleDTO) {
@@ -20,11 +20,13 @@ export class ArticleService {
 	}
 
 	async update(doi: string, articleDTO: ArticleDTO) {
-		return await this.articleModel.findByIdAndUpdate(doi, articleDTO).exec();
+		const article = await this.articleModel.findOne({doi: doi}).exec();
+		return await this.articleModel.findByIdAndUpdate(article._id, articleDTO).exec();
 	}
 
-	async delete(id: string) {
-		const deletedArticle = await this.articleModel.findByIdAndDelete(id).exec();
+	async delete(doi: string) {
+		const article = await this.articleModel.findOne({doi: doi}).exec();
+		const deletedArticle = await this.articleModel.findByIdAndDelete(article._id).exec();
 		return deletedArticle;
 	}
 }
