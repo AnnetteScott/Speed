@@ -1,10 +1,12 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import { DefaultEmptyUser, User } from './auth';
 
 export default function NavCard() {
 	const [user, setUser] = useState<User>(DefaultEmptyUser);
+	const navigate = useRouter();
 
 	useEffect(() => {
 		const auth = localStorage.getItem('auth');
@@ -16,12 +18,16 @@ export default function NavCard() {
 	const logout = () => {
 		localStorage.removeItem("auth");
 		setUser(DefaultEmptyUser);
+		navigate.push("/");
 	}
 
 	return (
 		<div className="nav">
+			<Link href='/'>SPEED</Link>
+			{ user.role === "Admin" ? <Link href='/manage-users'>Manage Users</Link> : null }
+			<p className="username">Hi, {user.username}</p>
 			{ user._id ? <button onClick={() => logout()}>Logout</button> : 
-				<Link href='/login'>login</Link> 
+				<Link href='/login'>Login</Link> 
 			}
 		</div>
 	);

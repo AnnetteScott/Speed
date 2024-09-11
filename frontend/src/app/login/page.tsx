@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from "next/navigation";
 import { User, DefaultEmptyUser } from "../../components/auth";
@@ -48,7 +47,7 @@ export default function Login() {
 				<label>
 					Password:
 					<input 
-						type="text" 
+						type="password" 
 						name="password" 
 						value={user.password} 
 						onChange={onChange}

@@ -13,5 +13,5 @@ export const DefaultEmptyUser: User = {
     username: '', 
     email: '',
     password: '',
-    role: "Admin"
+    role: "Moderator"
 }

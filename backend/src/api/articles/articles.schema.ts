@@ -3,9 +3,6 @@ import { Date, HydratedDocument } from 'mongoose';
 export type ArticleDocument = HydratedDocument<Article>;
 @Schema()
 export class Article {
-	@Prop()
-	_id: string;
-
 	@Prop({ required: true })
 	title: string;
 
