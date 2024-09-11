@@ -15,7 +15,7 @@ export default function NavCard() {
 		}
 	}, []);
 
-	const logout = () => {
+	function logout(){
 		localStorage.removeItem("auth");
 		setUser(DefaultEmptyUser);
 		navigate.push("/");

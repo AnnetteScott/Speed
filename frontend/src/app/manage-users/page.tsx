@@ -20,7 +20,7 @@ export default function ManageUsers() {
 		});
 	}, []);
 
-	const deleteUser = (id: string | undefined) => {
+	function deleteUser(id: string | undefined) {
 		if(!id){
 			return;
 		}

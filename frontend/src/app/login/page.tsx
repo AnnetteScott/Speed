@@ -8,11 +8,11 @@ export default function Login() {
 	const [user, setUser] = useState<User>(DefaultEmptyUser);
 	const navigate = useRouter();
 
-	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+	function onChange(event: ChangeEvent<HTMLInputElement>){
 		setUser({ ...user, [event.target.name]: event.target.value });
 	};
 	
-	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+	function onSubmit(event: FormEvent<HTMLFormElement>){
 		event.preventDefault()
 		fetch(process.env.NEXT_PUBLIC_BACKEND_URL  + `/api/auth/login/${user.username}/${user.password}`, {
 			method: 'GET',

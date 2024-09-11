@@ -8,11 +8,11 @@ export default function ManageUsers() {
 	const [newUser, setNewUser] = useState<User>(DefaultEmptyUser);
 	const navigate = useRouter();
 
-	const onChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	function onChange(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>){
 		setNewUser({ ...newUser, [event.target.name]: event.target.value });
 	};
 	
-	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+	function onSubmit(event: FormEvent<HTMLFormElement>){
 		event.preventDefault();
 		console.log(newUser);
 		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/", {
