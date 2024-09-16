@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Frontend
         working-directory: ./frontend
-        run: npm ci && npm run build
+        run: npm install && npm run build
 
       # Backend (Nest.js)
       - name: Set up Node.js for Backend
