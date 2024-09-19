@@ -25,7 +25,7 @@ export default function NavCard() {
 		<div className="nav">
 			<Link href='/'>SPEED</Link>
 			{ user.role === "Admin" ? <Link href='/manage-users'>Manage Users</Link> : null }
-			<p className="username">Hi, {user.username}</p>
+			<p className="username">{user.username ? 'Hi, ': ''} {user.username}</p>
 			{ user._id ? <button onClick={() => logout()}>Logout</button> : 
 				<Link href='/login'>Login</Link> 
 			}
