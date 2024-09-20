@@ -44,6 +44,9 @@ export class Article {
 	analysed: boolean;
 
 	@Prop({ required: true, default: false })
+	rejected: boolean;
+
+	@Prop({ required: true, default: false })
 	approved: boolean;
 
 }

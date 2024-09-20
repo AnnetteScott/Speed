@@ -129,3 +129,25 @@ td, th{
 .username{
 	margin-left: auto;
 }
+
+.card_container {
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+	border: 1px solid black;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.flex {
+	display: flex;
+	gap: 1rem;
+}
+
+.column {
+	flex-direction: column;
+}
+
+.flex_row {
+	flex-direction: row;
+}

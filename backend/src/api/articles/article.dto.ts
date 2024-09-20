@@ -10,6 +10,7 @@ export default class ArticleDTO {
 	claim: string[];
 	evidence: string;
 	moderated: boolean;
+	rejected: boolean;
 	analysed: boolean;
 	approved: boolean;
 	ratings: string[]
