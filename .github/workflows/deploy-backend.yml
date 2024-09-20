@@ -14,6 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js for Backend
+        uses: actions/setup-node@v4
+      
+      - name: Build Backend
+        working-directory: ./backend
+        run: npm ci && npm run build
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
