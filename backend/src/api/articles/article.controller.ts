@@ -68,10 +68,10 @@ export class ArticleController {
 	}
 
 	// Delete an Article via doi
-	@Delete('/:doi')
-	async deleteArticle(@Param('doi') doi: string) {
+	@Delete('/:id')
+	async deleteArticle(@Param('id') id: string) {
 		try {
-			return await await this.articleService.delete(doi);
+			return await await this.articleService.delete(id);
 		} catch {
 			throw new HttpException(
 				{status: HttpStatus.NOT_FOUND, error: 'No such a article'},
