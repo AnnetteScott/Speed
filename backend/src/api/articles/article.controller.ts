@@ -80,4 +80,21 @@ export class ArticleController {
 			);
 		}
 	}
+
+	//Get rejected Article by providing doi
+
+	@Get('/:doi')
+	async rejectedArticle(@Param('doi')doi: string){
+		try{
+			return  this.articleService.rejected(doi);
+			
+		}catch{
+			throw new HttpException(
+				{status:HttpStatus.NOT_FOUND, error: 'No such a article'},
+				HttpStatus.NOT_FOUND,
+				{ cause: error },
+			);
+
+		}
+	}
 }

@@ -10,4 +10,5 @@ export default class ArticleDTO {
 	moderated: boolean;
 	analysed: boolean;
 	approved: boolean;
+	rejected:boolean;
 }

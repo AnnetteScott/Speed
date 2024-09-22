@@ -29,4 +29,12 @@ export class ArticleService {
 		const deletedArticle = await this.articleModel.findByIdAndDelete(article._id).exec();
 		return deletedArticle;
 	}
+
+	//Checks if an Article is rejected by providing doi
+	async rejected(doi:string): Promise <Article>{
+		const rejectedArticle=await this.articleModel.findOne({doi:doi}).exec();
+
+		return rejectedArticle;
+		
+	}
 }
