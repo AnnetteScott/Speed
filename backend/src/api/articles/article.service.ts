@@ -32,7 +32,7 @@ export class ArticleService {
 
 	//Checks if an Article is rejected by providing doi
 	async rejected(doi:string): Promise <Article>{
-		const rejectedArticle=await this.articleModel.findOne({doi:doi}).exec();
+		const rejectedArticle=await this.articleModel.findOne({doi:doi,rejected:true}).exec();
 
 		return rejectedArticle;
 		
