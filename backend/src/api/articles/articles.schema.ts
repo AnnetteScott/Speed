@@ -10,7 +10,7 @@ export class Article {
 	doi: string;
 
 	@Prop()
-	authors: string[];
+	authors: string;
 
 	// This is the journal name, publisher, site name, etc.
 	@Prop()
@@ -23,10 +23,19 @@ export class Article {
 	pubYear: number;
 
 	@Prop()
+	volume: number;
+
+	@Prop()
+	number: number;
+
+	@Prop()
 	claim: string[];
 
 	@Prop()
 	evidence: string;
+
+	@Prop()
+	ratings: string[];
 
 	@Prop({ required: true, default: false })
 	moderated: boolean;

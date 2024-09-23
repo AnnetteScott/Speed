@@ -1,9 +1,11 @@
 export default class ArticleDTO {
 	title: string;
 	doi: string;
-	authors: string[];
+	authors: string;
 	source: string;
 	pages: string;
+	volume: number;
+	number: number;
 	pubYear: number;
 	claim: string[];
 	evidence: string;
@@ -11,4 +13,5 @@ export default class ArticleDTO {
 	analysed: boolean;
 	approved: boolean;
 	rejected:boolean;
+	ratings: string[]
 }
