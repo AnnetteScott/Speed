@@ -8,7 +8,7 @@ import { Article } from '@/components/Article';
 export default function ManageUsers() {
 	const [users, setUsers] = useState<[User?]>([]);
 	const [articles, setArticles] = useState<[Article?]>([]);
-
+	
 	useEffect(() => {
 		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth')
 		.then((res) => {

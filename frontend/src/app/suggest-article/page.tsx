@@ -20,15 +20,11 @@ export default function SuggestArticle() {
 			headers: {"Content-Type": "application/json"},
 			body: JSON.stringify(article)
 		})
-		.then(async (res) => {
-			const json = await res.json();
-			localStorage.setItem("auth", JSON.stringify(json));
-			console.log(localStorage.getItem("auth"));
+		.then((res) => {
 			setArticle(DefaultEmptyArticle);
 			navigate.push("/");
 		})
 		.catch((err) => {
-			localStorage.removeItem("auth");
 			console.log('Error from article submission: ' + err);
 		});
 	};
