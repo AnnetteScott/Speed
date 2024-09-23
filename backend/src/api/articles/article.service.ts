@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Article } from './articles.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -33,6 +33,11 @@ export class ArticleService {
 	//Checks if an Article is rejected by providing doi
 	async rejected(doi:string): Promise <Article>{
 		const rejectedArticle=await this.articleModel.findOne({doi:doi,rejected:true}).exec();
+
+		if (!rejectedArticle) {
+			throw new NotFoundException('No such article');
+		
+		  }
 
 		return rejectedArticle;
 		
