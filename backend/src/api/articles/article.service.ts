@@ -29,4 +29,9 @@ export class ArticleService {
 		const deletedArticle = await this.articleModel.findByIdAndDelete(article._id).exec();
 		return deletedArticle;
 	}
+
+	async getPendingArticles(): Promise<Article[]> {
+		// Fetch articles where status is 'pending' and sort them by oldest first
+		return this.articleModel.find({ moderated: false }).exec();
+	  }
 }
