@@ -151,3 +151,10 @@ td, th{
 .flex_row {
 	flex-direction: row;
 }
+
+.queue {
+	display: flex;
+	gap: 30px;
+	width: 100%;
+	overflow: auto;
+}
