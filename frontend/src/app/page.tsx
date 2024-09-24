@@ -7,7 +7,7 @@ import { Article } from "@/components/Article";
 
 export default function Home() {
   const [search, setSearch] = useState<string>("");
-  const [articles, setArticles] = useState<[Article?]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   // Event to detect user input
   function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -22,7 +22,7 @@ export default function Home() {
         <td>
           <a href={`https://doi.org/${article?.doi}`}>{article?.doi}</a>
         </td>
-        <td></td>
+        <td>{(article?.ratings.reduce((partialSum, a) => partialSum + a, 0)) / article?.ratings.length} / 5</td> {/*Sums up rating value for this article*/}
       </tr>
     ));
 
