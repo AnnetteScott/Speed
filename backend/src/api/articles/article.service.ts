@@ -42,4 +42,26 @@ export class ArticleService {
 		return rejectedArticle;
 		
 	}
+
+	//Rate an Article from 1-5 stars giving the doi of the article
+	async rating(doi:string,rate:string){
+
+		const ratingNumber=parseInt(rate,10);
+
+		if (ratingNumber>=1 && ratingNumber <=5){
+
+			const article= await this.articleModel.findOne({doi:doi,approved:true}).exec();
+
+			if (article){
+				article.ratings.push(rate);
+				await article.save();
+			}
+			else{
+				 throw new NotFoundException('No such article');
+			}
+		}
+		else{
+			return alert("Rating must be a number between 1 and 5.");
+		}
+	}
 }

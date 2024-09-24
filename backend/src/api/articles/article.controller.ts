@@ -4,6 +4,7 @@ import { Body, Controller, Delete, Get,
 import { ArticleService } from './article.service';
 import ArticleDTO from './article.dto';
 import { error } from 'console';
+import { retry } from 'rxjs';
   
 @Controller('api/articles')
 export class ArticleController {
@@ -97,6 +98,26 @@ export class ArticleController {
 		}
 	
 	}
+
+	//User can give an article a rating from 1-5 stars	
+
+	 @Post('rate')
+	 async rating(@Body('doi') doi:string, @Body('rate')rate:string){
+		try{
+			await this.articleService.rating(doi,rate);
+			return{message:'Rating added successfully'};
+
+
+		}catch{
+
+			throw new HttpException(
+				{status: HttpStatus.NOT_FOUND, error: "Couldn't add your rating. Something went wrong"},
+				HttpStatus.NOT_FOUND,
+				{ cause: error },
+
+			);
+		}
+	 }  
 
 
 }
