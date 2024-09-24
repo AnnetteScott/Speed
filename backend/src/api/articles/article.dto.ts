@@ -12,5 +12,5 @@ export default class ArticleDTO {
 	moderated: boolean;
 	analysed: boolean;
 	approved: boolean;
-	ratings: string[]
+	ratings: number[]
 }
