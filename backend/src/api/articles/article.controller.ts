@@ -120,4 +120,22 @@ export class ArticleController {
 	 }  
 
 
+	 @Get('filterByYear/:fromYear/:toYear')
+	 async yearFiltering(@Param('fromYear') fromYear:number,@Param('toYear') toYear:number){
+
+		try{
+		return await this.articleService.yearFiltering(fromYear,toYear);
+	}catch{
+		
+		throw new HttpException(
+			{status: HttpStatus.NOT_FOUND, error: "No Articles found in these years. Something went wrong"},
+			HttpStatus.NOT_FOUND,
+			{ cause: error },
+
+		);
+	}
+
+	 }
+
+
 }

@@ -64,4 +64,20 @@ export class ArticleService {
 			return alert("Rating must be a number between 1 and 5.");
 		}
 	}
+
+	//Get Articles between two given years (inclusive)
+
+	async yearFiltering(fromYear: number,toYear:number): Promise <Article[]>{
+		const filteredArticles=await this.articleModel.find({
+			pubYear:{$gte:fromYear,$lte:toYear}
+		}).exec();
+		if (filteredArticles){
+			return(filteredArticles);
+		}
+		else{
+			throw new NotFoundException('No such articles');
+		}
+
+		
+	}
 }
