@@ -2,7 +2,6 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import NavBar from "../components/navBar";
-import { User } from "../../../backend/src/api/auth/auth.schema";
 import { useState, ChangeEvent, useEffect } from "react";
 import { Article } from "@/components/Article";
 
