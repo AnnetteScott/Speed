@@ -81,9 +81,17 @@ export class ArticleController {
 		}
 	}
 
-	// Get all pending articles
-	@Get('/pending')
-	async getPendingArticles() {
-	  return await this.articleService.getPendingArticles();
-	}
+	// Get all Articles
+    @Get('/pending')
+    async getPending() {
+        try {
+            return this.articleService.getPending();
+        } catch {
+            throw new HttpException(
+                {status: HttpStatus.NOT_FOUND, error: 'No Articles found'},
+                HttpStatus.NOT_FOUND,
+                { cause: error },
+            );
+        }
+    }
 }

@@ -30,10 +30,8 @@ export class ArticleService {
 		return deletedArticle;
 	}
 
-	async getPendingArticles(): Promise<Article[]> {
-		const pendingArticles = await this.articleModel.find({ moderated: false }).exec();
-		console.log('Pending Articles fetched from database:', pendingArticles); // Log the articles
-		return pendingArticles;
-	}
+	async getPending(): Promise<Article[]> {
+        return await this.articleModel.find({moderated: false}).exec();
+    }
 	
 }

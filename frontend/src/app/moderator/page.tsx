@@ -9,7 +9,7 @@ interface Article {
     _id: string;
     title: string;
     doi: string;
-    authors: string;  // authors is now a single string
+    authors: string;
     source: string;
     pages: string;
     pubYear: number;
@@ -21,7 +21,6 @@ interface Article {
     moderated: boolean;
     analysed: boolean;
     approved: boolean;
-    createdAt: string; // Assuming createdAt is being sent from backend
 }
 
 const ModeratorPage: React.FC = () => {
@@ -133,7 +132,6 @@ const ModeratorPage: React.FC = () => {
                                         <td>{article.number}</td>
                                         <td>{article.claim.join(', ')}</td>
                                         <td>{article.evidence}</td>
-                                        <td>{new Date(article.createdAt).toLocaleDateString()}</td>
                                         <td>
                                             <Button
                                                 variant="success"
