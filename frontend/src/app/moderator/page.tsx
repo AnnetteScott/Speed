@@ -28,13 +28,21 @@ const ModeratorPage: React.FC = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/articles/pending');
+                console.log("Fetching articles from:", `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/pending`);
+                
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/pending`);
+                console.log("Response status:", response.status);
+    
                 if (!response.ok) {
-                    throw new Error('Failed to fetch articles');
+                    throw new Error(`Failed to fetch articles: ${response.statusText}`);
                 }
+    
                 const data = await response.json();
+                console.log("Data received from backend:", data);
+    
                 setArticles(data);
             } catch (error) {
+                console.error("Error fetching articles:", error);
                 setError((error as Error).message);
             } finally {
                 setLoading(false);
@@ -42,6 +50,7 @@ const ModeratorPage: React.FC = () => {
         };
         fetchArticles();
     }, []);
+    
 
     const approveArticle = async (id: string) => {
         try {

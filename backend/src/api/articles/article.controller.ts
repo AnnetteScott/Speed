@@ -82,7 +82,7 @@ export class ArticleController {
 	}
 
 	// Get all pending articles
-	@Get('pending')
+	@Get('/pending')
 	async getPendingArticles() {
 	  return await this.articleService.getPendingArticles();
 	}

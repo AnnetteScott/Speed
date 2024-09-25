@@ -31,7 +31,9 @@ export class ArticleService {
 	}
 
 	async getPendingArticles(): Promise<Article[]> {
-		// Fetch articles where status is 'pending' and sort them by oldest first
-		return this.articleModel.find({ moderated: false }).exec();
-	  }
+		const pendingArticles = await this.articleModel.find({ moderated: false }).exec();
+		console.log('Pending Articles fetched from database:', pendingArticles); // Log the articles
+		return pendingArticles;
+	}
+	
 }

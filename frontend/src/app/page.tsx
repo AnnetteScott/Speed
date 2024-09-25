@@ -5,6 +5,8 @@ import NavBar from "../components/navBar";
 import { useState, ChangeEvent, useEffect } from "react";
 import { Article } from "@/components/Article";
 
+import ModeratorPage from "./moderator/page";
+
 export default function Home() {
   const [search, setSearch] = useState<string>("");
   const [articles, setArticles] = useState<Article[]>([]);
@@ -60,6 +62,8 @@ export default function Home() {
         </thead>
         <tbody>{filtered}</tbody>
       </table>
+
+	  <ModeratorPage />
     </main>
   );
 }
