@@ -145,7 +145,7 @@ export default function ManageUsers() {
             {articles.map(article =>
               <tr key={article._id}>
                 <td>{article.title}</td>
-                <td>{article.authors.join(', ')}</td>
+                <td>{article.authors}</td>
                 <td>{article.source}</td>
                 <td>{article.pubYear}</td>
                 <td>{article.claim.join(', ')}</td>
