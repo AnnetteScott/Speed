@@ -33,7 +33,6 @@ export default function NavCard() {
 			{user._id ?
 				<button onClick={() => logout()}>Logout</button> :
 				<Link href='/login'>Login</Link>
-
 			}
 		</div>
 	);
