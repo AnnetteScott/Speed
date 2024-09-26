@@ -26,7 +26,7 @@ export default function NavCard() {
 			<Link href='/'>SPEED</Link>
 			<Link href='/suggest-article'>Suggest Article</Link>
 			{ user.role === "Admin" ? <Link href='/admin'>Admin</Link> : null }
-			{ (user._id && (user.role == ("Moderator" || "Admin"))) ? <Link href='/moderator'>Moderator</Link> : null}
+			{user._id && (user.role === "Moderator" || user.role === "Admin") ? <Link href='/moderator'>Moderator</Link> : null}
 			<p className="username">{user.username ? 'Hi, ': ''} {user.username}</p>
 			{ user._id ? 
 				<button onClick={() => logout()}>Logout</button> : 
