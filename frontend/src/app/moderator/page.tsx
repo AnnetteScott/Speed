@@ -28,11 +28,7 @@ const ModeratorPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [showDuplicates, setShowDuplicates] = useState<boolean>(true);
-    const [showRejected, setShowRejected] = useState<boolean>(true);
-    const [duplicateArticles, setDuplicateArticles] = useState<Article[]>([]);
 
-    // Columns visibility state, including DOI
     const [visibleColumns, setVisibleColumns] = useState({
         title: true,
         doi: true,
@@ -44,10 +40,9 @@ const ModeratorPage: React.FC = () => {
         number: true,
         claim: true,
         evidence: true,
-        note: true // New column for NOTE
+        note: true
     });
 
-    // Toggle column visibility
     const toggleColumn = (column: keyof typeof visibleColumns) => {
         setVisibleColumns({
             ...visibleColumns,
@@ -55,7 +50,6 @@ const ModeratorPage: React.FC = () => {
         });
     };
 
-    // Fetch pending articles
     useEffect(() => {
         const fetchArticles = async () => {
             try {
@@ -77,64 +71,12 @@ const ModeratorPage: React.FC = () => {
         fetchArticles();
     }, []);
 
-    // Identify duplicate articles based on DOI
-    const findDuplicateArticles = () => {
-        const articleMap = new Map<string, Article[]>();
 
-        articles.forEach((article) => {
-            const doiKey = article.doi;
-
-            if (!articleMap.has(doiKey)) {
-                articleMap.set(doiKey, []);
-            }
-            articleMap.get(doiKey)?.push(article);
-        });
-
-        // Filter articles that have more than one entry with the same DOI
-        const duplicates = articles.filter(article => {
-            return (articleMap.get(article.doi)?.length ?? 0) > 1;
-        });
-
-        return duplicates;
+    const checkIfDuplicate = (doi: string): boolean => {
+        const duplicateCount = articles.filter(article => article.doi === doi).length;
+        return duplicateCount > 1;
     };
 
-    const handleShowDuplicates = () => {
-        if (!showDuplicates) {
-            const duplicates = findDuplicateArticles();
-            setDuplicateArticles(duplicates);
-        } else {
-            setDuplicateArticles([]);
-        }
-        setShowDuplicates(!showDuplicates);
-    };
-
-    // Fetch rejected articles from the backend
-    const fetchRejectedArticles = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/rejected`);
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch rejected articles: ${response.statusText}`);
-            }
-
-            const rejectedArticles: Article[] = await response.json();
-            setArticles((prevArticles) =>
-                prevArticles.map(article =>
-                    rejectedArticles.find(rejected => rejected._id === article._id) ? { ...article, rejected: true } : article
-                )
-            );
-        } catch (error) {
-            console.error("Error fetching rejected articles:", error);
-        }
-    };
-
-    // Toggle showing rejected articles
-    const handleShowRejected = () => {
-        if (!showRejected) {
-            fetchRejectedArticles();
-        }
-        setShowRejected(!showRejected);
-    };
 
     return (
         <Container className="mt-5">
@@ -155,10 +97,10 @@ const ModeratorPage: React.FC = () => {
             ) : (
                 <>
                     <Table striped bordered hover responsive>
-                        <thead style={{ border: "2px solid" }}>
-                            <tr style={{ borderBottom: '2px solid' }}>
+                        <thead style={styles.tableHeader}>
+                            <tr style={styles.headerRow}>
                                 {Object.keys(visibleColumns).map((col) => (
-                                    <th key={col} style={{ border: 'none' }}>
+                                    <th key={col} style={styles.headerCell}>
                                         <Form.Check
                                             inline
                                             label={col.charAt(0).toUpperCase() + col.slice(1)}
@@ -167,24 +109,6 @@ const ModeratorPage: React.FC = () => {
                                         />
                                     </th>
                                 ))}
-                                <th style={{ border: 'none' }}>
-                                    <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={handleShowDuplicates}
-                                    >
-                                        {showDuplicates ? "Hide Duplicates" : "Show Duplicates"}
-                                    </Button>
-                                </th>
-                                <th style={{ border: 'none' }}>
-                                    <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={handleShowRejected}
-                                    >
-                                        {showRejected ? "Hide Rejected" : "Show Rejected"}
-                                    </Button>
-                                </th>
                             </tr>
                         </thead>
                     </Table>
@@ -201,14 +125,15 @@ const ModeratorPage: React.FC = () => {
                             {visibleColumns.number && <th>Number</th>}
                             {visibleColumns.claim && <th>Claims</th>}
                             {visibleColumns.evidence && <th>Evidence</th>}
-                            {visibleColumns.note && <th>Note</th>} {/* Added NOTE column */}
+                            {visibleColumns.note && <th>Note</th>}
                             <th>Actions</th>
                         </thead>
                         <tbody>
                             {articles.map(article => {
-                                const isDuplicate = duplicateArticles.some(dup => dup.doi === article.doi);
+                                const isDuplicate = checkIfDuplicate(article.doi);
                                 const isRejected = article.rejected;
-                                const note = isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" : "";
+                                const note = (isDuplicate && isRejected) ? "REJECTED AND DUPLICATE" : isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" :  "";
+                                
 
                                 return (
                                     <tr key={article._id}>
@@ -222,7 +147,7 @@ const ModeratorPage: React.FC = () => {
                                         {visibleColumns.number && <td>{article.number}</td>}
                                         {visibleColumns.claim && <td>{article.claim.join(', ')}</td>}
                                         {visibleColumns.evidence && <td>{article.evidence}</td>}
-                                        {visibleColumns.note && <td>{note}</td>} {/* Display NOTE content */}
+                                        {visibleColumns.note && <td>{note}</td>} 
                                         <td>
                                             <Button variant="success" size="sm" className="me-2">Approve</Button>
                                             <Button variant="danger" size="sm">Reject</Button>
@@ -237,6 +162,16 @@ const ModeratorPage: React.FC = () => {
             }
         </Container >
     );
+};
+
+// CSS Styling
+const styles = {
+    tableHeader: { border: "2px solid" },
+    headerRow: { borderBottom: '2px solid' },
+    headerCell: { border: 'none' },
+
+    
+    
 };
 
 export default ModeratorPage;
