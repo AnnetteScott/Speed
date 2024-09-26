@@ -35,7 +35,7 @@ export class Article {
 	evidence: string;
 
 	@Prop()
-	ratings: string[];
+	ratings: number[];
 
 	@Prop({ required: true, default: false })
 	moderated: boolean;

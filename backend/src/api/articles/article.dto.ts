@@ -13,5 +13,5 @@ export default class ArticleDTO {
 	rejected: boolean;
 	analysed: boolean;
 	approved: boolean;
-	ratings: string[]
+	ratings: number[]
 }
