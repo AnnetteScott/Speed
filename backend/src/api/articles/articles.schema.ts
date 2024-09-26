@@ -46,7 +46,7 @@ export class Article {
 	@Prop({ required: true, default: false })
 	approved: boolean;
 
-	@Prop({ required: false, default: false })
+	@Prop({ required: true, default: false })
 	rejected: boolean;
 
 }
