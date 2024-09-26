@@ -112,7 +112,7 @@ const ModeratorPage: React.FC = () => {
                 <Row className="mb-3">
                     <Col>
                         <h1 className="text-center">Articles to be Moderater</h1>
-                        <p className="text-center">NOTE: The 'Note' section shows if the article has been rejected or/and duplicated</p>
+                        <p className="text-center">NOTE: The &apos;Note&apos; section shows if the article has been rejected or/and duplicated</p>
                     </Col>
                 </Row>
 
