@@ -85,8 +85,8 @@ const ModeratorPage: React.FC = () => {
             <Container className="mt-5">
                 <Row className="mb-3">
                     <Col>
-                        <h1 className="text-center">Moderator Page</h1>
-                        <p className="text-center">Welcome to the moderator page. Here you can manage articles pending review.</p>
+                        <h1 className="text-center">Articles to be Moderater</h1>
+                        <p className="text-center">NOTE: The 'Note' section shows if the article has been rejected or/and duplicated</p>
                     </Col>
                 </Row>
 
