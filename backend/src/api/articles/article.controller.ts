@@ -23,6 +23,20 @@ export class ArticleController {
 		}
 	}
 
+	// Get all Articles
+	@Get('/pending')
+	async getPending() {
+		try {
+			return this.articleService.getPending();
+		} catch {
+			throw new HttpException(
+				{status: HttpStatus.NOT_FOUND, error: 'No Articles found'},
+				HttpStatus.NOT_FOUND,
+				{ cause: error },
+			);
+		}
+	}
+
 	// Get one article via doi
 	@Get('/:doi')
 	async findOne(@Param('doi') doi: string) {

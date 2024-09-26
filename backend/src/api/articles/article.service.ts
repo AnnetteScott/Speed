@@ -29,4 +29,9 @@ export class ArticleService {
 		const deletedArticle = await this.articleModel.findByIdAndDelete(article._id).exec();
 		return deletedArticle;
 	}
+
+	async getPending(): Promise<Article[]> {
+        return await this.articleModel.find({moderated: false}).exec();
+    }
+	
 }
