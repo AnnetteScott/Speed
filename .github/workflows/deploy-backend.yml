@@ -5,10 +5,10 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
 on:
   push:
-    branches: [main]
+    branches: [main, 3-vercel]
 
 jobs:
-  Deploy-Production-Frontend:
+  Deploy-Production-Backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,11 +28,7 @@ jobs:
         working-directory: ./backend
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build Project Artifacts
-        working-directory: ./backend
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Deploy Project Artifacts to Vercel
         working-directory: ./backend
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
 
