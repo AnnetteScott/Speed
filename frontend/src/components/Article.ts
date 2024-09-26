@@ -13,6 +13,7 @@ export type Article = {
 	moderated: boolean;
 	analysed: boolean;
 	approved: boolean;
+	rejected: boolean;
 	ratings: number[];
 };
 
@@ -28,6 +29,7 @@ export const DefaultEmptyArticle: Article = {
 	claim: [],
 	evidence: "",
 	moderated: false,
+	rejected: false,
 	analysed: false,
 	approved: false,
 	ratings: []
