@@ -78,6 +78,32 @@ const ModeratorPage: React.FC = () => {
         return duplicateCount > 1;
     };
 
+    const handleApprove = async (id: string) => {
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/approvedByModerator/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error approving article: ' + err);
+            });
+        
+    };
+    const handleReject = async (id: string) => {
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/reject/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error rejecting article: ' + err);
+            });
+    };
+
 
     return (
         <main>
@@ -86,7 +112,7 @@ const ModeratorPage: React.FC = () => {
                 <Row className="mb-3">
                     <Col>
                         <h1 className="text-center">Articles to be Moderater</h1>
-                        <p className="text-center">NOTE: The 'Note' section shows if the article has been rejected or/and duplicated</p>
+                        <p className="text-center">NOTE: The &apos;Note&apos; section shows if the article has been rejected or/and duplicated</p>
                     </Col>
                 </Row>
 
@@ -152,8 +178,8 @@ const ModeratorPage: React.FC = () => {
                                             {visibleColumns.evidence && <td>{article.evidence}</td>}
                                             {visibleColumns.note && <td>{note}</td>}
                                             <td>
-                                                <Button variant="success" size="sm" className="me-2">Approve</Button>
-                                                <Button variant="danger" size="sm">Reject</Button>
+                                                <Button variant="success" size="sm" className="me-2" onClick={() => handleApprove(article._id)}>Approve</Button>
+                                                <Button variant="danger" size="sm" onClick={() => handleReject(article._id)}>Reject</Button>
                                             </td>
                                         </tr>
                                     );
