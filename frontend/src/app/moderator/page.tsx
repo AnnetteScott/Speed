@@ -78,6 +78,32 @@ const ModeratorPage: React.FC = () => {
         return duplicateCount > 1;
     };
 
+    const handleApprove = async (id: string) => {
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/approvedByModerator/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error approving article: ' + err);
+            });
+        
+    };
+    const handleReject = async (id: string) => {
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/reject/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error rejecting article: ' + err);
+            });
+    };
+
 
     return (
         <main>
@@ -152,8 +178,8 @@ const ModeratorPage: React.FC = () => {
                                             {visibleColumns.evidence && <td>{article.evidence}</td>}
                                             {visibleColumns.note && <td>{note}</td>}
                                             <td>
-                                                <Button variant="success" size="sm" className="me-2">Approve</Button>
-                                                <Button variant="danger" size="sm">Reject</Button>
+                                                <Button variant="success" size="sm" className="me-2" onClick={() => handleApprove(article._id)}>Approve</Button>
+                                                <Button variant="danger" size="sm" onClick={() => handleReject(article._id)}>Reject</Button>
                                             </td>
                                         </tr>
                                     );
