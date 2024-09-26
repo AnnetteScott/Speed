@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, 
-	HttpException, HttpStatus, Param, Post, Put 
+	HttpException, HttpStatus, Param, Post, Put, Patch, NotFoundException
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import ArticleDTO from './article.dto';
@@ -94,4 +94,22 @@ export class ArticleController {
 			);
 		}
 	}
+
+	@Patch('/approvedByModerator/:id')
+    async approveArticle(@Param('id') id: string) {
+        try {
+            return await this.articleService.moderatorApproved(id);
+        } catch (error) {
+            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+        }
+    }
+
+	@Patch('/reject/:id')
+    async rejectArticle(@Param('id') id: string) {
+        try {
+            return await this.articleService.rejectArticle(id);
+        } catch (error) {
+            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+        }
+    }
 }
