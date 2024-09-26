@@ -62,8 +62,6 @@ export default function Home() {
         </thead>
         <tbody>{filtered}</tbody>
       </table>
-
-	  <ModeratorPage />
     </main>
   );
 }

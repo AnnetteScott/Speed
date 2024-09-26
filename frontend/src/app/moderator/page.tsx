@@ -2,7 +2,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Container, Row, Col, Alert, Spinner, Form } from 'react-bootstrap';
+import { Table, Button, Container, Row, Col, Alert, Spinner, Form, Nav } from 'react-bootstrap';
+import NavBar from '../../components/navBar'
 
 interface Article {
     _id: string;
@@ -79,99 +80,98 @@ const ModeratorPage: React.FC = () => {
 
 
     return (
-        <Container className="mt-5">
-            <Row className="mb-3">
-                <Col>
-                    <h1 className="text-center">Moderator Page</h1>
-                    <p className="text-center">Welcome to the moderator page. Here you can manage articles pending review.</p>
-                </Col>
-            </Row>
+        <main>
+            <NavBar />
+            <Container className="mt-5">
+                <Row className="mb-3">
+                    <Col>
+                        <h1 className="text-center">Moderator Page</h1>
+                        <p className="text-center">Welcome to the moderator page. Here you can manage articles pending review.</p>
+                    </Col>
+                </Row>
 
-            {error && <Alert variant="danger">{error}</Alert>}
-            {loading ? (
-                <div className="d-flex justify-content-center">
-                    <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </div>
-            ) : (
-                <>
-                    <Table striped bordered hover responsive>
-                        <thead style={styles.tableHeader}>
-                            <tr style={styles.headerRow}>
-                                {Object.keys(visibleColumns).map((col) => (
-                                    <th key={col} style={styles.headerCell}>
-                                        <Form.Check
-                                            inline
-                                            label={col.charAt(0).toUpperCase() + col.slice(1)}
-                                            checked={visibleColumns[col as keyof typeof visibleColumns]}
-                                            onChange={() => toggleColumn(col as keyof typeof visibleColumns)}
-                                        />
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                    </Table>
+                {error && <Alert variant="danger">{error}</Alert>}
+                {loading ? (
+                    <div className="d-flex justify-content-center">
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                ) : (
+                    <>
+                        <Table striped bordered hover responsive>
+                            <thead style={styles.tableHeader}>
+                                <tr style={styles.headerRow}>
+                                    {Object.keys(visibleColumns).map((col) => (
+                                        <th key={col} style={styles.headerCell}>
+                                            <Form.Check
+                                                inline
+                                                label={col.charAt(0).toUpperCase() + col.slice(1)}
+                                                checked={visibleColumns[col as keyof typeof visibleColumns]}
+                                                onChange={() => toggleColumn(col as keyof typeof visibleColumns)}
+                                            />
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                        </Table>
 
-                    <Table striped bordered hover responsive>
-                        <thead>
-                            {visibleColumns.title && <th>Title</th>}
-                            {visibleColumns.doi && <th>DOI</th>}
-                            {visibleColumns.authors && <th>Authors</th>}
-                            {visibleColumns.source && <th>Source</th>}
-                            {visibleColumns.pages && <th>Pages</th>}
-                            {visibleColumns.pubYear && <th>Year</th>}
-                            {visibleColumns.volume && <th>Volume</th>}
-                            {visibleColumns.number && <th>Number</th>}
-                            {visibleColumns.claim && <th>Claims</th>}
-                            {visibleColumns.evidence && <th>Evidence</th>}
-                            {visibleColumns.note && <th>Note</th>}
-                            <th>Actions</th>
-                        </thead>
-                        <tbody>
-                            {articles.map(article => {
-                                const isDuplicate = checkIfDuplicate(article.doi);
-                                const isRejected = article.rejected;
-                                const note = (isDuplicate && isRejected) ? "REJECTED AND DUPLICATE" : isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" :  "";
-                                
+                        <Table striped bordered hover responsive>
+                            <thead>
+                                {visibleColumns.title && <th>Title</th>}
+                                {visibleColumns.doi && <th>DOI</th>}
+                                {visibleColumns.authors && <th>Authors</th>}
+                                {visibleColumns.source && <th>Source</th>}
+                                {visibleColumns.pages && <th>Pages</th>}
+                                {visibleColumns.pubYear && <th>Year</th>}
+                                {visibleColumns.volume && <th>Volume</th>}
+                                {visibleColumns.number && <th>Number</th>}
+                                {visibleColumns.claim && <th>Claims</th>}
+                                {visibleColumns.evidence && <th>Evidence</th>}
+                                {visibleColumns.note && <th>Note</th>}
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                {articles.map(article => {
+                                    const isDuplicate = checkIfDuplicate(article.doi);
+                                    const isRejected = article.rejected;
+                                    const note = (isDuplicate && isRejected) ? "REJECTED AND DUPLICATE" : isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" : "";
 
-                                return (
-                                    <tr key={article._id}>
-                                        {visibleColumns.title && <td >{article.title}</td>}
-                                        {visibleColumns.doi && <td>{article.doi}</td>}
-                                        {visibleColumns.authors && <td>{article.authors}</td>}
-                                        {visibleColumns.source && <td>{article.source}</td>}
-                                        {visibleColumns.pages && <td>{article.pages}</td>}
-                                        {visibleColumns.pubYear && <td>{article.pubYear}</td>}
-                                        {visibleColumns.volume && <td>{article.volume}</td>}
-                                        {visibleColumns.number && <td>{article.number}</td>}
-                                        {visibleColumns.claim && <td>{article.claim.join(', ')}</td>}
-                                        {visibleColumns.evidence && <td>{article.evidence}</td>}
-                                        {visibleColumns.note && <td>{note}</td>} 
-                                        <td>
-                                            <Button variant="success" size="sm" className="me-2">Approve</Button>
-                                            <Button variant="danger" size="sm">Reject</Button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </Table>
-                </>
-            )
-            }
-        </Container >
+
+                                    return (
+                                        <tr key={article._id}>
+                                            {visibleColumns.title && <td >{article.title}</td>}
+                                            {visibleColumns.doi && <td>{article.doi}</td>}
+                                            {visibleColumns.authors && <td>{article.authors}</td>}
+                                            {visibleColumns.source && <td>{article.source}</td>}
+                                            {visibleColumns.pages && <td>{article.pages}</td>}
+                                            {visibleColumns.pubYear && <td>{article.pubYear}</td>}
+                                            {visibleColumns.volume && <td>{article.volume}</td>}
+                                            {visibleColumns.number && <td>{article.number}</td>}
+                                            {visibleColumns.claim && <td>{article.claim.join(', ')}</td>}
+                                            {visibleColumns.evidence && <td>{article.evidence}</td>}
+                                            {visibleColumns.note && <td>{note}</td>}
+                                            <td>
+                                                <Button variant="success" size="sm" className="me-2">Approve</Button>
+                                                <Button variant="danger" size="sm">Reject</Button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </Table>
+                    </>
+                )
+                }
+            </Container >
+        </main>
     );
 };
 
-// CSS Styling
 const styles = {
     tableHeader: { border: "2px solid" },
     headerRow: { borderBottom: '2px solid' },
     headerCell: { border: 'none' },
-
-    
-    
 };
 
 export default ModeratorPage;
