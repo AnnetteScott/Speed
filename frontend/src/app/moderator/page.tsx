@@ -4,25 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Container, Row, Col, Alert, Spinner, Form, Nav } from 'react-bootstrap';
 import NavBar from '../../components/navBar'
-
-interface Article {
-    _id: string;
-    title: string;
-    doi: string;
-    authors: string;
-    source: string;
-    pages: string;
-    pubYear: number;
-    volume: number;
-    number: number;
-    claim: string[];
-    evidence: string;
-    ratings: number[];
-    moderated: boolean;
-    analysed: boolean;
-    approved: boolean;
-    rejected: boolean;
-}
+import { Article } from '@/components/Article';
 
 const ModeratorPage: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
@@ -78,7 +60,11 @@ const ModeratorPage: React.FC = () => {
         return duplicateCount > 1;
     };
 
-    const handleApprove = async (id: string) => {
+    const handleApprove = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/approvedByModerator/${id}`, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" }
@@ -91,7 +77,11 @@ const ModeratorPage: React.FC = () => {
             });
         
     };
-    const handleReject = async (id: string) => {
+    const handleReject = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/reject/${id}`, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" }

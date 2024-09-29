@@ -1,4 +1,5 @@
 export type Article = {
+	_id?: string;
 	title: string;
 	doi: string;
 	source: string;
@@ -18,6 +19,7 @@ export type Article = {
 };
 
 export const DefaultEmptyArticle: Article = {
+	_id: undefined,
 	title: "",
 	doi: "",
 	authors: "",
