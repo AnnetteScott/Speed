@@ -28,4 +28,26 @@ export class ArticleService {
 		const deletedArticle = await this.articleModel.findByIdAndDelete(id).exec();
 		return deletedArticle;
 	}
+
+	async getPending(): Promise<Article[]> {
+        return await this.articleModel.find({moderated: false}).exec();
+    }
+
+	async moderatorApproved(id: string): Promise<Article> {
+        const article = await this.articleModel.findById(id);
+
+        article.moderated = true;
+        await article.save();
+        return article;
+    }
+
+	async rejectArticle(id: string): Promise<Article> {
+        const article = await this.articleModel.findById(id);
+
+        article.moderated = true;
+        article.rejected = true;
+        await article.save();
+        return article;
+    }
+	
 }

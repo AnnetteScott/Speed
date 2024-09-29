@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, 
-	HttpException, HttpStatus, Param, Post, Put 
+	HttpException, HttpStatus, Param, Post, Put, Patch, NotFoundException
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import ArticleDTO from './article.dto';
@@ -14,6 +14,20 @@ export class ArticleController {
 	async findAll() {
 		try {
 			return this.articleService.findAll();
+		} catch {
+			throw new HttpException(
+				{status: HttpStatus.NOT_FOUND, error: 'No Articles found'},
+				HttpStatus.NOT_FOUND,
+				{ cause: error },
+			);
+		}
+	}
+
+	// Get all Articles
+	@Get('/pending')
+	async getPending() {
+		try {
+			return this.articleService.getPending();
 		} catch {
 			throw new HttpException(
 				{status: HttpStatus.NOT_FOUND, error: 'No Articles found'},
@@ -80,4 +94,22 @@ export class ArticleController {
 			);
 		}
 	}
+
+	@Patch('/approvedByModerator/:id')
+    async approveArticle(@Param('id') id: string) {
+        try {
+            return await this.articleService.moderatorApproved(id);
+        } catch (error) {
+            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+        }
+    }
+
+	@Patch('/reject/:id')
+    async rejectArticle(@Param('id') id: string) {
+        try {
+            return await this.articleService.rejectArticle(id);
+        } catch (error) {
+            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+        }
+    }
 }
