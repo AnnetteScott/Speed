@@ -15,9 +15,6 @@ interface Article {
     pubYear: number;
     volume: number;
     number: number;
-    claim: string[];
-    evidence: string;
-    ratings: number[];
     moderated: boolean;
     analysed: boolean;
     approved: boolean;
@@ -39,8 +36,6 @@ const ModeratorPage: React.FC = () => {
         pubYear: true,
         volume: true,
         number: true,
-        claim: true,
-        evidence: true,
         note: true
     });
 
@@ -152,8 +147,6 @@ const ModeratorPage: React.FC = () => {
                                 {visibleColumns.pubYear && <th>Year</th>}
                                 {visibleColumns.volume && <th>Volume</th>}
                                 {visibleColumns.number && <th>Number</th>}
-                                {visibleColumns.claim && <th>Claims</th>}
-                                {visibleColumns.evidence && <th>Evidence</th>}
                                 {visibleColumns.note && <th>Note</th>}
                                 <th>Actions</th>
                             </thead>
@@ -174,8 +167,6 @@ const ModeratorPage: React.FC = () => {
                                             {visibleColumns.pubYear && <td>{article.pubYear}</td>}
                                             {visibleColumns.volume && <td>{article.volume}</td>}
                                             {visibleColumns.number && <td>{article.number}</td>}
-                                            {visibleColumns.claim && <td>{article.claim.join(', ')}</td>}
-                                            {visibleColumns.evidence && <td>{article.evidence}</td>}
                                             {visibleColumns.note && <td>{note}</td>}
                                             <td>
                                                 <Button variant="success" size="sm" className="me-2" onClick={() => handleApprove(article._id)}>Approve</Button>
