@@ -1,4 +1,4 @@
-export type role = "Admin" | "Moderator" | "Analyst"
+export type role = "Admin" | "Moderator" | "Analyst" | ""
 
 export type User = {
 	_id?: string;
@@ -13,5 +13,5 @@ export const DefaultEmptyUser: User = {
     username: '', 
     email: '',
     password: '',
-    role: "Moderator"
+    role: ""
 }
