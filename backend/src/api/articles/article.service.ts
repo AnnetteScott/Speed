@@ -24,9 +24,8 @@ export class ArticleService {
 		return await this.articleModel.findByIdAndUpdate(article._id, articleDTO).exec();
 	}
 
-	async delete(doi: string) {
-		const article = await this.articleModel.findOne({doi: doi}).exec();
-		const deletedArticle = await this.articleModel.findByIdAndDelete(article._id).exec();
+	async delete(id: string) {
+		const deletedArticle = await this.articleModel.findByIdAndDelete(id).exec();
 		return deletedArticle;
 	}
 
