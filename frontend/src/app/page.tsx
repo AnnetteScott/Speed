@@ -9,6 +9,8 @@ import ModeratorPage from "./moderator/page";
 
 export default function Home() {
   const [search, setSearch] = useState<string>("");
+  const [fromYear, setFromYear] = useState<number>(2000);
+  const [toYear, setToYear] = useState<number>(2024);
   const [articles, setArticles] = useState<Article[]>([]);
 
   // Event to detect user input
@@ -16,8 +18,17 @@ export default function Home() {
     setSearch(event.target.value);
   }
 
+  function fromChange(event: ChangeEvent<HTMLInputElement>) {
+    setFromYear(parseInt(event.target.value));
+  }
+
+  function toChange(event: ChangeEvent<HTMLInputElement>) {
+    setToYear(parseInt(event.target.value));
+  }
+
   const filtered = articles
     .filter((a) => a?.title.toLowerCase().includes(search.toLowerCase()) || a?.doi.toLowerCase().includes(search.toLowerCase()))
+	.filter((a) => a.pubYear >= fromYear && a.pubYear <= toYear)
     .map((article) => (
       <tr key={article?.doi}>
         <td>{article?.title}</td>
@@ -51,6 +62,14 @@ export default function Home() {
       <label>
         Search:
         <input type="search" value={search} onChange={onChange} />
+      </label>
+	  <label>
+        From Year:
+        <input type="number" value={fromYear} onChange={fromChange} step="1"/>
+      </label>
+	  <label>
+        To Year:
+        <input type="search" value={toYear} onChange={toChange} step="1"/>
       </label>
       <table>
         <thead>
