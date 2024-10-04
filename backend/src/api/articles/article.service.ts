@@ -50,4 +50,21 @@ export class ArticleService {
         return article;
     }
 	
+//
+async getClaimsByMethod(method: string): Promise<string[] | null> {
+    // Fetch all articles or claims configuration from your data source
+    const articles = await this.articleModel.find().exec(); 
+
+    // Flatten the claimsByMethod from all articles into a single array
+    const claimsByMethod = articles.flatMap(article => 
+        article.claimsByMethod || []
+    );
+
+    // Find the claims associated with the specified SE method
+    const methodClaims = claimsByMethod.find((entry: { method: string; claims: string[] }) => entry.method === method);
+
+    // Return the claims if found, otherwise return null
+    return methodClaims ? methodClaims.claims : null;
+}
+
 }
