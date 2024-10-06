@@ -7,6 +7,8 @@ import { Article } from "@/components/Article";
 
 export default function Home() {
   const [search, setSearch] = useState<string>("");
+  const [fromYear, setFromYear] = useState<number>(2000);
+  const [toYear, setToYear] = useState<number>(2024);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +43,7 @@ export default function Home() {
   // Filtered articles based on search
   const filtered = articles
     .filter((a) => a?.title.toLowerCase().includes(search.toLowerCase()) || a?.doi.toLowerCase().includes(search.toLowerCase()))
+	.filter((a) => a.pubYear >= fromYear && a.pubYear <= toYear)
     .map((article) => (
       <tr key={article?.doi}>
         {visibleColumns.title && <td>{article?.title}</td>}
