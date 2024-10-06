@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bibtex-parse": "^2.1.0",
+    "bibtex-parse-js": "^0.0.24",
     "bootstrap": "^5.3.3",
     "next": "^14.2.13",
     "react": "^18",

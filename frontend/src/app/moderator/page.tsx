@@ -3,12 +3,11 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from "next/navigation";
 import NavBar from '../../components/navBar';
 import { Article, DefaultEmptyArticle } from '@/components/Article';
-import { parseBibtex } from '../../utils/bibtexParser'; // Assuming you have a utility for parsing BibTeX files
-
+import { parseBibtex } from '../../utils/bibtexParser'; 
 export default function SuggestArticle() {
 
 	const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
-	const [fileContent, setFileContent] = useState<string | null>(null); // For storing uploaded BibTeX content
+	const [fileContent, setFileContent] = useState<string | null>(null);
 	const navigate = useRouter();
 
 	// Handle manual input changes
@@ -23,8 +22,8 @@ export default function SuggestArticle() {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				const content = e.target?.result as string;
-				setFileContent(content); // Store the file content
-				const parsedArticle = parseBibtex(content); // Parse the BibTeX content
+				setFileContent(content); 
+				const parsedArticle = parseBibtex(content); 
 				setArticle({
 					title: parsedArticle.title || "",
 					doi: parsedArticle.doi || "",
@@ -34,13 +33,13 @@ export default function SuggestArticle() {
 					pubYear: parsedArticle.pubYear || 0,
 					volume: parsedArticle.volume || 0,
 					number: parsedArticle.number || 0,
-					claim: [], // Default value
-					evidence: "", // Default value
-					ratings: [], // Default value
-					moderated: false, // Default value
-					analysed: false, // Default value
-					approved: false, // Default value
-					rejected: false, // Default value
+					claim: [],
+					evidence: "", 
+					ratings: [], 
+					moderated: false,
+					analysed: false,
+					approved: false,
+					rejected: false,
 				});
 			};
 			reader.readAsText(file);
@@ -142,8 +141,6 @@ export default function SuggestArticle() {
 						onChange={onChange}
 					/>
 				</label>
-
-				{/* File input for BibTeX upload */}
 				<label>
 					Upload BibTeX File:
 					<input 

@@ -1,8 +1,4 @@
-// utils/bibtexParser.ts
-
 export function parseBibtex(bibtexContent: string) {
-    // Assuming you parse BibTeX content and return the relevant details
-    // You can use a library like `bibtex-parse-js` for this
   
     const bibtexParser = require('bibtex-parse-js');
     const parsed = bibtexParser.toJSON(bibtexContent);
