@@ -109,7 +109,7 @@ export class ArticleController {
         try {
             return await this.articleService.rejectArticle(id);
         } catch (error) {
-            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+            throw new NotFoundException(`Could not reject article with ID ${id}: ${error.message}`);
         }
     }
 }
