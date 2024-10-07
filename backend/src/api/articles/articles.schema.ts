@@ -29,9 +29,6 @@ export class Article {
 	number: number;
 
 	@Prop()
-	claim: string[];
-
-	@Prop()
 	evidence: string;
 
 	@Prop()
@@ -49,5 +46,9 @@ export class Article {
 	@Prop({ required: true, default: false })
 	approved: boolean;
 
-}
+	@Prop({ required: true,type: [{ method: String, claims: [String] }] })
+	claimsByMethod: { [method: string]: string[] };
+  }
+
+
 export const ArticleSchema = SchemaFactory.createForClass(Article);

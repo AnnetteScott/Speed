@@ -112,4 +112,17 @@ export class ArticleController {
             throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
         }
     }
+
+	@Get('/claims/:seMethod')
+    async getClaims(@Param('seMethod') seMethod: string) {
+        try {
+            return await this.articleService.getClaimsByMethod(seMethod);
+        } catch (error) {
+            throw new HttpException(
+                { status: HttpStatus.BAD_REQUEST, error: 'Invalid SE Method' },
+                HttpStatus.BAD_REQUEST,
+                { cause: error }
+            );
+        }
+}
 }
