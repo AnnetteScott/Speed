@@ -49,26 +49,60 @@ export default function ManageUsers() {
 		setClaims(event.target.value);
 	};
 	
-	function onSubmit(event: FormEvent<HTMLFormElement>){
-		event.preventDefault();
-		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/", {
-			method: 'POST', 
+	function approve(){
+		if(article._id === undefined){
+			return;
+		}
+
+		article.analysed = true;
+		article.approved = true;
+		article.claims = claims.split(",");
+		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/${article._id}`, {
+			method: 'PUT', 
 			headers: {"Content-Type": "application/json"}, 
 			body: JSON.stringify(article)
 		})
 		.then((res) => {
+			getArticles();
+			setArticle(DefaultEmptyArticle);
 		})
 		.catch((err) => {
-			console.log('Error from CreateBook: ' + err);
+			console.log('Error from approve: ' + err);
 		});
 	};
 
+	function reject(){
+		if(article._id === undefined){
+			return;
+		}
+
+		article.analysed = true;
+		article.rejected = true;
+		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/${article._id}`, {
+			method: 'PUT',
+			headers: {"Content-Type": "application/json"}, 
+			body: JSON.stringify(article)
+		})
+		.then((res) => {
+			getArticles();
+			setArticle(DefaultEmptyArticle);
+		})
+		.catch((err) => {
+			console.log('Error from reject: ' + err);
+		});
+	};
 
 return (
 	<main>
 		<NavBar />
 		<div className='queue'>{articleQueue.length == 0 ? 'There are no articles waiting!' : articleQueue}</div>
 		<br />
+		{ article._id != undefined ?
+			<div>
+				<button onClick={() => approve()} >Approve</button>
+				<button onClick={() => reject()} >Reject</button>
+			</div>
+		:''}
 
 		{ article._id != undefined ? 
 			<a href={`https://doi.org/${article.doi}`}>https://doi.org/{article.doi}</a>
