@@ -10,7 +10,7 @@ export type Article = {
 	number: number;
 	
 	claim: string[];
-	evidence: string;
+	method: string;
 	moderated: boolean;
 	analysed: boolean;
 	approved: boolean;
@@ -29,7 +29,7 @@ export const DefaultEmptyArticle: Article = {
 	number: 0,
 	pubYear: 0,
 	claim: [],
-	evidence: "",
+	method: "",
 	moderated: false,
 	rejected: false,
 	analysed: false,

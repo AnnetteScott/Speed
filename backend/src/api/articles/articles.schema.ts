@@ -32,7 +32,7 @@ export class Article {
 	claim: string[];
 
 	@Prop()
-	evidence: string;
+	method: string;
 
 	@Prop()
 	ratings: number[];
