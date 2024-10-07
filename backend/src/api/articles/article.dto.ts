@@ -7,7 +7,7 @@ export default class ArticleDTO {
 	volume: number;
 	number: number;
 	pubYear: number;
-	claim: string[];
+	claims: string[];
 	method: string;
 	moderated: boolean;
 	rejected: boolean;

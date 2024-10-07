@@ -9,7 +9,7 @@ export type Article = {
 	volume: number;
 	number: number;
 	
-	claim: string[];
+	claims: string[];
 	method: string;
 	moderated: boolean;
 	analysed: boolean;
@@ -28,7 +28,7 @@ export const DefaultEmptyArticle: Article = {
 	volume: 0,
 	number: 0,
 	pubYear: 0,
-	claim: [],
+	claims: [],
 	method: "",
 	moderated: false,
 	rejected: false,

@@ -29,7 +29,7 @@ export class Article {
 	number: number;
 
 	@Prop()
-	claim: string[];
+	claims: string[];
 
 	@Prop()
 	method: string;
