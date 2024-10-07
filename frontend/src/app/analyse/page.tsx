@@ -8,10 +8,15 @@ import ArticleCard from '@/components/ArticleCard';
 export default function ManageUsers() {
 	const [articles, setArticles] = useState<Article[]>([]);
 	const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
+	const [claims, setClaims] = useState<string>("");
 
 	const navigate = useRouter();
 
 	useEffect(() => {
+		getArticles();
+	}, []);
+
+	function getArticles(){
 		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/articles/", {
 			method: 'GET', 
 			headers: {"Content-Type": "application/json"},
@@ -25,7 +30,7 @@ export default function ManageUsers() {
 		.catch((err) => {
 			console.log('Error from fetching articles: ' + err);
 		});
-	}, []);
+	}
 
 	const handleArticleClick = (article: Article) => {
 		console.log('Article clicked:', article);
@@ -34,10 +39,14 @@ export default function ManageUsers() {
 
 	const articleQueue = articles.filter(a => !a.analysed && !a.rejected && a.moderated).map((art, k) => 
 			<ArticleCard article={art} onArticleClick={handleArticleClick} key={k} />
-		);
+	);
 
 	function onChange(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>){
-		setArticles({ ...articles, [event.target.name]: event.target.value });
+		setArticle({ ...article, [event.target.name]: event.target.value });
+	};
+
+	function onClaims(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>){
+		setClaims(event.target.value);
 	};
 	
 	function onSubmit(event: FormEvent<HTMLFormElement>){
@@ -54,95 +63,116 @@ export default function ManageUsers() {
 		});
 	};
 
-	return (
-		<main>
-			<NavBar />
-			<div className='queue'>{articleQueue.length == 0 ? 'There are no articles waiting!' : articleQueue}</div>
-			<br />
-			{ articleQueue.length != 0 ? 
-				<a href={`https://doi.org${article.doi}`}>https://doi.org{article.doi}</a>
-			:''}
-			{ articleQueue.length != 0 ? 
-				<div className="flex flex_row">
-					<div className="flex column">
-						<label>
-							Title:
-							<input 
-								type="text" 
-								name="title" 
-								value={article.title} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							DOI:
-							<input 
-								type="text" 
-								name="doi"
-								placeholder="10.1000/82"
-								value={article.doi} 
-								onChange={onChange}
-								required
-							/>
-						</label>
-						<label>
-							Source:
-							<input 
-								type="text" 
-								name="source" 
-								value={article.source} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							Pages:
-							<input 
-								type="text" 
-								name="pages" 
-								value={article.pages} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							Volume:
-							<input
-								type="text" 
-								name="volume" 
-								value={article.volume} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							Number:
-							<input
-								type="text" 
-								name="number" 
-								value={article.number} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							Published Year:
-							<input 
-								type="text" 
-								name="pubYear" 
-								value={article.pubYear} 
-								onChange={onChange}
-							/>
-						</label>
-						<label>
-							Authors:
-							<input 
-								type="text" 
-								name="authors" 
-								value={article.authors} 
-								onChange={onChange}
-							/>
-						</label>
-					</div>
+
+return (
+	<main>
+		<NavBar />
+		<div className='queue'>{articleQueue.length == 0 ? 'There are no articles waiting!' : articleQueue}</div>
+		<br />
+
+		{ article._id != undefined ? 
+			<a href={`https://doi.org/${article.doi}`}>https://doi.org/{article.doi}</a>
+		:''}
+		{ article._id != undefined ? 
+			<div className="flex flex_row">
+				<div className="flex column">
+					<label>
+						Title:
+						<input 
+							type="text" 
+							name="title" 
+							value={article.title} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						DOI:
+						<input 
+							type="text" 
+							name="doi"
+							placeholder="10.1000/82"
+							value={article.doi} 
+							onChange={onChange}
+							required
+						/>
+					</label>
+					<label>
+						Source:
+						<input 
+							type="text" 
+							name="source" 
+							value={article.source} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Pages:
+						<input 
+							type="text" 
+							name="pages" 
+							value={article.pages} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Volume:
+						<input
+							type="text" 
+							name="volume" 
+							value={article.volume} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Number:
+						<input
+							type="text" 
+							name="number" 
+							value={article.number} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Published Year:
+						<input 
+							type="text" 
+							name="pubYear" 
+							value={article.pubYear} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Authors:
+						<input 
+							type="text" 
+							name="authors" 
+							value={article.authors} 
+							onChange={onChange}
+						/>
+					</label>
+					<br />
+					<label>
+						Method:
+						<input 
+							type="text" 
+							name="method" 
+							value={article.method} 
+							onChange={onChange}
+						/>
+					</label>
+					<label>
+						Claims:
+						<input 
+							type="text" 
+							name="method"
+							placeholder="Separate with comma"
+							value={claims} 
+							onChange={onClaims}
+						/>
+					</label>
 				</div>
-			:''}
-			
-		</main>
-	);
+			</div>
+		:''}
+	</main>
+);
 }
