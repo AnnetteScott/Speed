@@ -3,7 +3,8 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from "next/navigation";
 import NavBar from '../../components/navBar';
 import { Article, DefaultEmptyArticle } from '@/components/Article';
-import { parseBibtex } from '../../utils/bibtexParser'; 
+import { parseBibtex } from '../../utils/bibtexParser';
+import { alignPropType } from 'react-bootstrap/esm/types';
 export default function SuggestArticle() {
 
 	const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
@@ -11,7 +12,7 @@ export default function SuggestArticle() {
 	const navigate = useRouter();
 
 	// Handle manual input changes
-	function onChange(event: ChangeEvent<HTMLInputElement>){
+	function onChange(event: ChangeEvent<HTMLInputElement>) {
 		setArticle({ ...article, [event.target.name]: event.target.value });
 	};
 
@@ -22,8 +23,8 @@ export default function SuggestArticle() {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				const content = e.target?.result as string;
-				setFileContent(content); 
-				const parsedArticle = parseBibtex(content); 
+				setFileContent(content);
+				const parsedArticle = parseBibtex(content);
 				setArticle({
 					title: parsedArticle.title || "",
 					doi: parsedArticle.doi || "",
@@ -34,8 +35,8 @@ export default function SuggestArticle() {
 					volume: parsedArticle.volume || 0,
 					number: parsedArticle.number || 0,
 					claim: [],
-					evidence: "", 
-					ratings: [], 
+					evidence: "",
+					ratings: [],
 					moderated: false,
 					analysed: false,
 					approved: false,
@@ -54,101 +55,103 @@ export default function SuggestArticle() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(article)
 		})
-		.then((res) => {
-			setArticle(DefaultEmptyArticle);
-			navigate.push("/");
-		})
-		.catch((err) => {
-			console.log('Error from article submission: ' + err);
-		});
+			.then((res) => {
+				setArticle(DefaultEmptyArticle);
+				navigate.push("/");
+			})
+			.catch((err) => {
+				console.log('Error from article submission: ' + err);
+			});
 	}
 
 	return (
 		<main>
 			<NavBar />
 			<form onSubmit={onSubmit}>
+				<h3>
+					Upload BibTeX File
+				</h3>
+				<input
+					type="file"
+					accept=".bib"
+					onChange={handleFileChange}
+				/>
+				<h3 >OR</h3>
 				<label>
 					Title:
-					<input 
-						type="text" 
-						name="title" 
-						value={article.title} 
+					<input
+						type="text"
+						name="title"
+						value={article.title}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					DOI:
-					<input 
-						type="text" 
+					<input
+						type="text"
 						name="doi"
 						placeholder="10.1000/82"
-						value={article.doi} 
+						value={article.doi}
 						onChange={onChange}
 						required
 					/>
 				</label>
 				<label>
 					Source:
-					<input 
-						type="text" 
-						name="source" 
-						value={article.source} 
+					<input
+						type="text"
+						name="source"
+						value={article.source}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					Pages:
-					<input 
-						type="text" 
-						name="pages" 
-						value={article.pages} 
+					<input
+						type="text"
+						name="pages"
+						value={article.pages}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					Volume:
 					<input
-						type="text" 
-						name="volume" 
-						value={article.volume} 
+						type="text"
+						name="volume"
+						value={article.volume}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					Number:
 					<input
-						type="text" 
-						name="number" 
-						value={article.number} 
+						type="text"
+						name="number"
+						value={article.number}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					Published Year:
-					<input 
-						type="text" 
-						name="pubYear" 
-						value={article.pubYear} 
+					<input
+						type="text"
+						name="pubYear"
+						value={article.pubYear}
 						onChange={onChange}
 					/>
 				</label>
 				<label>
 					Authors:
-					<input 
-						type="text" 
-						name="authors" 
-						value={article.authors} 
+					<input
+						type="text"
+						name="authors"
+						value={article.authors}
 						onChange={onChange}
 					/>
 				</label>
-				<label>
-					Upload BibTeX File:
-					<input 
-						type="file"
-						accept=".bib"
-						onChange={handleFileChange}
-					/>
-				</label>
+
 
 				<input type="submit" />
 			</form>
