@@ -1,11 +1,7 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
 import NavBar from "../components/navBar";
 import { useState, ChangeEvent, useEffect } from "react";
 import { Article } from "@/components/Article";
-
-import ModeratorPage from "./moderator/page";
 
 export default function Home() {
 	const [search, setSearch] = useState<string>("");

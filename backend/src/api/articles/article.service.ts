@@ -11,17 +11,16 @@ export class ArticleService {
 		return await this.articleModel.find().exec();
 	}
 
-	async findOne(doi: string): Promise<Article> {
-		return await this.articleModel.findOne({doi: doi}).exec();
+	async findOne(id: string): Promise<Article> {
+		return await this.articleModel.findOne({_id: id}).exec();
 	}
 
 	async create(articleDTO: ArticleDTO) {
 		return await this.articleModel.create(articleDTO);
 	}
 
-	async update(doi: string, articleDTO: ArticleDTO) {
-		const article = await this.articleModel.findOne({doi: doi}).exec();
-		return await this.articleModel.findByIdAndUpdate(article._id, articleDTO).exec();
+	async update(id: string, articleDTO: ArticleDTO) {
+		return await this.articleModel.findByIdAndUpdate(id, articleDTO).exec();
 	}
 
 	async delete(id: string) {
