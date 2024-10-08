@@ -29,10 +29,10 @@ export class Article {
 	number: number;
 
 	@Prop()
-	claim: string[];
+	claims: string[];
 
 	@Prop()
-	evidence: string;
+	method: string;
 
 	@Prop()
 	ratings: number[];
