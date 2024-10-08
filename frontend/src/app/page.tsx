@@ -8,6 +8,8 @@ export default function Home() {
 	const [fromYear, setFromYear] = useState<number>(2000);
 	const [toYear, setToYear] = useState<number>(2024);
 	const [articles, setArticles] = useState<Article[]>([]);
+	const [methods, setMethods] = useState<string[]>([]);
+	const [method, setMethod] = useState<string>("All");
 
 	// Event to detect user input
 	function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -22,20 +24,25 @@ export default function Home() {
 		setToYear(parseInt(event.target.value));
 	}
 
+	function changeMethod(event: ChangeEvent<HTMLSelectElement>) {
+		setMethod(event.target.value);
+	}
+
 	const filtered = articles
 		.filter((a) => a?.title.toLowerCase().includes(search.toLowerCase()) || a?.doi.toLowerCase().includes(search.toLowerCase()))
 		.filter((a) => a.pubYear >= fromYear && a.pubYear <= toYear)
+		.filter((a) => a.method === method || method === "All")
 		.map((article) => (
-			<tr key={article?.doi}>
-				<td>{article?.title}</td>
-				<td>
-				<a href={`https://doi.org/${article?.doi}`}>{article?.doi}</a>
-				</td>
-				<td>{(article?.ratings.reduce((partialSum, a) => partialSum + a, 0)) / article?.ratings.length} / 5</td> {/*Sums up rating value for this article*/}
-			</tr>
-		));
+		<tr key={article?.doi}>
+			<td>{article?.title}</td>
+			<td>
+			<a href={`https://doi.org/${article?.doi}`}>{article?.doi}</a>
+			</td>
+			<td>{(article?.ratings.reduce((partialSum, a) => partialSum + a, 0)) / article?.ratings.length} / 5</td>
+		</tr>
+	));
 
-	// Fetches all articles and makes sure only approved ones are displayed
+	// Fetches all articles and makes sure only approved onees are displayed
 	useEffect(() => {
 		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/articles")
 		.then((res) => {
@@ -50,10 +57,21 @@ export default function Home() {
 		.catch((err) => {
 			console.log("Error from Articles: " + err);
 		});
+		
+		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/admin")
+		.then((res) => {
+			return res.json();
+		})
+		.then((admin) => {
+			setMethods(admin[0].methods);
+		})
+		.catch((err) => {
+			console.log("Error from Articles: " + err);
+		});
 	}, []);
 
-  return (
-	<main>
+return (
+    <main>
 		<NavBar />
 		<label>
 			Search:
@@ -66,6 +84,13 @@ export default function Home() {
 		<label>
 			To Year:
 			<input type="search" value={toYear} onChange={toChange} step="1"/>
+		</label>
+		<label>
+			Method:
+			<select value={method} onChange={changeMethod}>
+				<option value="All">All</option>
+				{methods.map(method => <option key={method} value={method}>{method}</option>)}
+			</select>
 		</label>
 		<table>
 			<thead>
