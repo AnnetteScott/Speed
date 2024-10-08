@@ -1,160 +1,111 @@
-'use client'
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { useRouter } from "next/navigation";
-import NavBar from '../components/navBar';
-import { Article, DefaultEmptyArticle } from '@/components/Article';
-import { parseBibtex } from '../utils/bibtexParser';
-import { alignPropType } from 'react-bootstrap/esm/types';
-export default function SuggestArticle() {
+"use client";
+import Image from "next/image";
+import styles from "./page.module.css";
+import NavBar from "../components/navBar";
+import { useState, ChangeEvent, useEffect } from "react";
+import { Article } from "@/components/Article";
 
-	const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
-	const [fileContent, setFileContent] = useState<string | null>(null);
-	const navigate = useRouter();
+import ModeratorPage from "./moderator/page";
 
-	// Handle manual input changes
+export default function Home() {
+	const [search, setSearch] = useState<string>("");
+	const [fromYear, setFromYear] = useState<number>(2000);
+	const [toYear, setToYear] = useState<number>(2024);
+	const [articles, setArticles] = useState<Article[]>([]);
+	const [methods, setMethods] = useState<string[]>([]);
+	const [method, setMethod] = useState<string>("All");
+
+	// Event to detect user input
 	function onChange(event: ChangeEvent<HTMLInputElement>) {
-		setArticle({ ...article, [event.target.name]: event.target.value });
-	};
-
-	// Handle file input (BibTeX format)
-	function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-		const file = event.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				const content = e.target?.result as string;
-				setFileContent(content);
-				const parsedArticle = parseBibtex(content);
-				setArticle({
-					title: parsedArticle.title || "",
-					doi: parsedArticle.doi || "",
-					authors: parsedArticle.authors || "",
-					source: parsedArticle.source || "",
-					pages: parsedArticle.pages || "",
-					pubYear: parsedArticle.pubYear || 0,
-					volume: parsedArticle.volume || 0,
-					number: parsedArticle.number || 0,
-					claim: [],
-					evidence: "",
-					ratings: [],
-					moderated: false,
-					analysed: false,
-					approved: false,
-					rejected: false,
-				});
-			};
-			reader.readAsText(file);
-		}
+		setSearch(event.target.value);
 	}
 
-	function onSubmit(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+	function fromChange(event: ChangeEvent<HTMLInputElement>) {
+		setFromYear(parseInt(event.target.value));
+	}
 
-		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles`, {
-			method: 'POST',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(article)
+	function toChange(event: ChangeEvent<HTMLInputElement>) {
+		setToYear(parseInt(event.target.value));
+	}
+
+	function changeMethod(event: ChangeEvent<HTMLSelectElement>) {
+		setMethod(event.target.value);
+	}
+
+	const filtered = articles
+		.filter((a) => a?.title.toLowerCase().includes(search.toLowerCase()) || a?.doi.toLowerCase().includes(search.toLowerCase()))
+		.filter((a) => a.pubYear >= fromYear && a.pubYear <= toYear)
+		.filter((a) => a.method === method || method === "All")
+		.map((article) => (
+		<tr key={article?.doi}>
+			<td>{article?.title}</td>
+			<td>
+			<a href={`https://doi.org/${article?.doi}`}>{article?.doi}</a>
+			</td>
+			<td>{(article?.ratings.reduce((partialSum, a) => partialSum + a, 0)) / article?.ratings.length} / 5</td>
+		</tr>
+	));
+
+	// Fetches all articles and makes sure only approved onees are displayed
+	useEffect(() => {
+		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/articles")
+		.then((res) => {
+			return res.json();
 		})
-			.then((res) => {
-				setArticle(DefaultEmptyArticle);
-				navigate.push("/");
-			})
-			.catch((err) => {
-				console.log('Error from article submission: ' + err);
-			});
-	}
+		.then((articles) => {
+			const approved = (articles as Article[]).filter(
+			(a) => a.approved
+			) as any;
+			setArticles(approved);
+		})
+		.catch((err) => {
+			console.log("Error from Articles: " + err);
+		});
+		
+		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/admin")
+		.then((res) => {
+			return res.json();
+		})
+		.then((admin) => {
+			setMethods(admin[0].methods);
+		})
+		.catch((err) => {
+			console.log("Error from Articles: " + err);
+		});
+	}, []);
 
-	return (
-		<main>
-			<NavBar />
-			<form onSubmit={onSubmit}>
-				<h3>
-					Upload BibTeX File
-				</h3>
-				<input
-					type="file"
-					accept=".bib"
-					onChange={handleFileChange}
-				/>
-				<h3 >OR</h3>
-				<label>
-					Title:
-					<input
-						type="text"
-						name="title"
-						value={article.title}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					DOI:
-					<input
-						type="text"
-						name="doi"
-						placeholder="10.1000/82"
-						value={article.doi}
-						onChange={onChange}
-						required
-					/>
-				</label>
-				<label>
-					Source:
-					<input
-						type="text"
-						name="source"
-						value={article.source}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Pages:
-					<input
-						type="text"
-						name="pages"
-						value={article.pages}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Volume:
-					<input
-						type="text"
-						name="volume"
-						value={article.volume}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Number:
-					<input
-						type="text"
-						name="number"
-						value={article.number}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Published Year:
-					<input
-						type="text"
-						name="pubYear"
-						value={article.pubYear}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Authors:
-					<input
-						type="text"
-						name="authors"
-						value={article.authors}
-						onChange={onChange}
-					/>
-				</label>
-
-
-				<input type="submit" />
-			</form>
-		</main>
-	);
+return (
+    <main>
+		<NavBar />
+		<label>
+			Search:
+			<input type="search" value={search} onChange={onChange} />
+		</label>
+		<label>
+			From Year:
+			<input type="number" value={fromYear} onChange={fromChange} step="1"/>
+		</label>
+		<label>
+			To Year:
+			<input type="search" value={toYear} onChange={toChange} step="1"/>
+		</label>
+		<label>
+			Method:
+			<select value={method} onChange={changeMethod}>
+				<option value="All">All</option>
+				{methods.map(method => <option key={method} value={method}>{method}</option>)}
+			</select>
+		</label>
+		<table>
+			<thead>
+			<tr>
+				<th>Title</th>
+				<th>DOI</th>
+				<th>Ratings</th>
+			</tr>
+			</thead>
+			<tbody>{filtered}</tbody>
+		</table>
+	</main>
+  );
 }

@@ -186,7 +186,7 @@ return (
 				<th>Source</th>
 				<th>Year</th>
 				<th>Claims</th>
-				<th>Evidence</th>
+				<th>Method</th>
 				<th>Actions</th>
 				</tr>
 			</thead>
@@ -197,8 +197,8 @@ return (
 					<td>{article.authors}</td>
 					<td>{article.source}</td>
 					<td>{article.pubYear}</td>
-					<td>{article.claim.join(', ')}</td>
-					<td>{article.evidence}</td>
+					<td>{article.claims.join(', ')}</td>
+					<td>{article.method}</td>
 					<td>
 					<button onClick={() => approveArticle(article._id)}>Approve</button>
 					<button onClick={() => rejectArticle(article._id)}>Reject</button>
