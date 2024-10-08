@@ -1,160 +1,225 @@
-'use client'
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { useRouter } from "next/navigation";
-import NavBar from '../../components/navBar';
-import { Article, DefaultEmptyArticle } from '@/components/Article';
-import { parseBibtex } from '../../utils/bibtexParser';
-import { alignPropType } from 'react-bootstrap/esm/types';
-export default function SuggestArticle() {
+"use client";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-	const [article, setArticle] = useState<Article>(DefaultEmptyArticle);
-	const [fileContent, setFileContent] = useState<string | null>(null);
-	const navigate = useRouter();
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Container, Row, Col, Alert, Spinner, Form, Nav } from 'react-bootstrap';
+import NavBar from '../../components/navBar'
+import { Article } from '@/components/Article';
 
-	// Handle manual input changes
-	function onChange(event: ChangeEvent<HTMLInputElement>) {
-		setArticle({ ...article, [event.target.name]: event.target.value });
-	};
+const ModeratorPage: React.FC = () => {
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-	// Handle file input (BibTeX format)
-	function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-		const file = event.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				const content = e.target?.result as string;
-				setFileContent(content);
-				const parsedArticle = parseBibtex(content);
-				setArticle({
-					title: parsedArticle.title || "",
-					doi: parsedArticle.doi || "",
-					authors: parsedArticle.authors || "",
-					source: parsedArticle.source || "",
-					pages: parsedArticle.pages || "",
-					pubYear: parsedArticle.pubYear || 0,
-					volume: parsedArticle.volume || 0,
-					number: parsedArticle.number || 0,
-					claim: [],
-					evidence: "",
-					ratings: [],
-					moderated: false,
-					analysed: false,
-					approved: false,
-					rejected: false,
-				});
-			};
-			reader.readAsText(file);
-		}
-	}
 
-	function onSubmit(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+    const [visibleColumns, setVisibleColumns] = useState({
+        title: true,
+        doi: true,
+        authors: true,
+        source: true,
+        pages: true,
+        pubYear: true,
+        volume: true,
+        number: true,
+        note: true
+    });
 
-		fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles`, {
-			method: 'POST',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(article)
+    const toggleColumn = (column: keyof typeof visibleColumns) => {
+        setVisibleColumns({
+            ...visibleColumns,
+            [column]: !visibleColumns[column]
+        });
+    };
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/pending`);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch articles: ${response.statusText}`);
+                }
+
+                const data: Article[] = await response.json();
+                setArticles(data);
+            } catch (error) {
+                console.error("Error fetching articles:", error);
+                setError((error as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArticles();
+    }, []);
+
+
+    const checkIfDuplicate = (doi: string, index: number): boolean => {
+		const duplicates: number[] = []
+		articles.forEach((art, i) => {
+			if(art.doi === doi){
+				duplicates.push(i);
+			}
 		})
-			.then((res) => {
-				setArticle(DefaultEmptyArticle);
-				navigate.push("/");
-			})
-			.catch((err) => {
-				console.log('Error from article submission: ' + err);
-			});
-	}
 
-	return (
-		<main>
-			<NavBar />
-			<form onSubmit={onSubmit}>
-				<h3>
-					Upload BibTeX File
-				</h3>
-				<input
-					type="file"
-					accept=".bib"
-					onChange={handleFileChange}
-				/>
-				<h3 >OR</h3>
-				<label>
-					Title:
-					<input
-						type="text"
-						name="title"
-						value={article.title}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					DOI:
-					<input
-						type="text"
-						name="doi"
-						placeholder="10.1000/82"
-						value={article.doi}
-						onChange={onChange}
-						required
-					/>
-				</label>
-				<label>
-					Source:
-					<input
-						type="text"
-						name="source"
-						value={article.source}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Pages:
-					<input
-						type="text"
-						name="pages"
-						value={article.pages}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Volume:
-					<input
-						type="text"
-						name="volume"
-						value={article.volume}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Number:
-					<input
-						type="text"
-						name="number"
-						value={article.number}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Published Year:
-					<input
-						type="text"
-						name="pubYear"
-						value={article.pubYear}
-						onChange={onChange}
-					/>
-				</label>
-				<label>
-					Authors:
-					<input
-						type="text"
-						name="authors"
-						value={article.authors}
-						onChange={onChange}
-					/>
-				</label>
+		if(duplicates[0] === index){
+			return false;
+		}else if(duplicates.length > 1){
+			return true;
+		}
+        
+		return false;
+    };
+
+    const handleApprove = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/approvedByModerator/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error approving article: ' + err);
+            });
+        
+    };
+    const handleReject = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/reject/${id}`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error rejecting article: ' + err);
+            });
+    };
+
+    const deleteArticle = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/${id}`, {
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error rejecting article: ' + err);
+            });
+    };
 
 
-				<input type="submit" />
-			</form>
-		</main>
-	);
-}
+    return (
+        <main>
+            <NavBar />
+			<br />
+			<h1 className="text-center">Articles to be Moderated</h1>
+            <Container className="mt-5">
+                {error && <Alert variant="danger">{error}</Alert>}
+                {loading ? (
+                    <div className="d-flex justify-content-center">
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                ) : (
+                    <>
+                        <Table striped bordered hover responsive>
+                            <thead style={styles.tableHeader}>
+                                <tr style={styles.headerRow}>
+                                    {Object.keys(visibleColumns).map((col) => (
+                                        <th key={col} style={styles.headerCell}>
+                                            <Form.Check
+                                                inline
+                                                label={col.charAt(0).toUpperCase() + col.slice(1)}
+                                                checked={visibleColumns[col as keyof typeof visibleColumns]}
+                                                onChange={() => toggleColumn(col as keyof typeof visibleColumns)}
+                                            />
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                        </Table>
+
+                        <Table striped bordered hover responsive>
+                            <thead>
+                                {visibleColumns.title && <th>Title</th>}
+                                {visibleColumns.doi && <th>DOI</th>}
+                                {visibleColumns.authors && <th>Authors</th>}
+                                {visibleColumns.source && <th>Source</th>}
+                                {visibleColumns.pages && <th>Pages</th>}
+                                {visibleColumns.pubYear && <th>Year</th>}
+                                {visibleColumns.volume && <th>Volume</th>}
+                                {visibleColumns.number && <th>Number</th>}
+                                {visibleColumns.note && <th>Note</th>}
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                {articles.map((article, i) => {
+                                    const isDuplicate = checkIfDuplicate(article.doi, i);
+                                    const isRejected = article.rejected;
+                                    const note = (isDuplicate && isRejected) ? "REJECTED AND DUPLICATE" : isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" : "";
+
+
+                                    return (
+                                        <tr key={article._id}>
+                                            {visibleColumns.title && <td >{article.title}</td>}
+                                            {visibleColumns.doi && <td>{article.doi}</td>}
+                                            {visibleColumns.authors && <td>{article.authors}</td>}
+                                            {visibleColumns.source && <td>{article.source}</td>}
+                                            {visibleColumns.pages && <td>{article.pages}</td>}
+                                            {visibleColumns.pubYear && <td>{article.pubYear}</td>}
+                                            {visibleColumns.volume && <td>{article.volume}</td>}
+                                            {visibleColumns.number && <td>{article.number}</td>}
+                                            {visibleColumns.note && <td>{note}</td>}
+                                            <td>
+												{ checkIfDuplicate(article.doi, i) ? null :
+													<button onClick={() => handleApprove(article._id)}>
+														Approve
+													</button>
+												}
+												{ checkIfDuplicate(article.doi, i) ? null :
+													<button onClick={() => handleReject(article._id)}>
+														Reject
+													</button>
+												}
+												{ checkIfDuplicate(article.doi, i) ?
+													<button onClick={() => deleteArticle(article._id)}>
+														Delete
+													</button>
+													: null
+												}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </Table>
+                    </>
+                )
+                }
+            </Container >
+        </main>
+    );
+};
+
+const styles = {
+    tableHeader: { border: "2px solid" },
+    headerRow: { borderBottom: '2px solid' },
+    headerCell: { border: 'none' },
+};
+
+export default ModeratorPage;
