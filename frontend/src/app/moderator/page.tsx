@@ -21,8 +21,6 @@ const ModeratorPage: React.FC = () => {
         pubYear: true,
         volume: true,
         number: true,
-        claim: true,
-        evidence: true,
         note: true
     });
 
@@ -55,9 +53,21 @@ const ModeratorPage: React.FC = () => {
     }, []);
 
 
-    const checkIfDuplicate = (doi: string): boolean => {
-        const duplicateCount = articles.filter(article => article.doi === doi).length;
-        return duplicateCount > 1;
+    const checkIfDuplicate = (doi: string, index: number): boolean => {
+		const duplicates: number[] = []
+		articles.forEach((art, i) => {
+			if(art.doi === doi){
+				duplicates.push(i);
+			}
+		})
+
+		if(duplicates[0] === index){
+			return false;
+		}else if(duplicates.length > 1){
+			return true;
+		}
+        
+		return false;
     };
 
     const handleApprove = async (id: string | undefined) => {
@@ -94,18 +104,30 @@ const ModeratorPage: React.FC = () => {
             });
     };
 
+    const deleteArticle = async (id: string | undefined) => {
+		if(!id){
+			return;
+		}
+
+        fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/${id}`, {
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json" }
+          })
+            .then(() => {
+              setArticles(articles.filter(article => article._id !== id));
+            })
+            .catch((err) => {
+              console.log('Error rejecting article: ' + err);
+            });
+    };
+
 
     return (
         <main>
             <NavBar />
+			<br />
+			<h1 className="text-center">Articles to be Moderated</h1>
             <Container className="mt-5">
-                <Row className="mb-3">
-                    <Col>
-                        <h1 className="text-center">Articles to be Moderater</h1>
-                        <p className="text-center">NOTE: The &apos;Note&apos; section shows if the article has been rejected or/and duplicated</p>
-                    </Col>
-                </Row>
-
                 {error && <Alert variant="danger">{error}</Alert>}
                 {loading ? (
                     <div className="d-flex justify-content-center">
@@ -142,14 +164,12 @@ const ModeratorPage: React.FC = () => {
                                 {visibleColumns.pubYear && <th>Year</th>}
                                 {visibleColumns.volume && <th>Volume</th>}
                                 {visibleColumns.number && <th>Number</th>}
-                                {visibleColumns.claim && <th>Claims</th>}
-                                {visibleColumns.evidence && <th>Evidence</th>}
                                 {visibleColumns.note && <th>Note</th>}
                                 <th>Actions</th>
                             </thead>
                             <tbody>
-                                {articles.map(article => {
-                                    const isDuplicate = checkIfDuplicate(article.doi);
+                                {articles.map((article, i) => {
+                                    const isDuplicate = checkIfDuplicate(article.doi, i);
                                     const isRejected = article.rejected;
                                     const note = (isDuplicate && isRejected) ? "REJECTED AND DUPLICATE" : isRejected ? "REJECTED" : isDuplicate ? "DUPLICATE" : "";
 
@@ -164,12 +184,24 @@ const ModeratorPage: React.FC = () => {
                                             {visibleColumns.pubYear && <td>{article.pubYear}</td>}
                                             {visibleColumns.volume && <td>{article.volume}</td>}
                                             {visibleColumns.number && <td>{article.number}</td>}
-                                            {visibleColumns.claim && <td>{article.claim.join(', ')}</td>}
-                                            {visibleColumns.evidence && <td>{article.evidence}</td>}
                                             {visibleColumns.note && <td>{note}</td>}
                                             <td>
-                                                <Button variant="success" size="sm" className="me-2" onClick={() => handleApprove(article._id)}>Approve</Button>
-                                                <Button variant="danger" size="sm" onClick={() => handleReject(article._id)}>Reject</Button>
+												{ checkIfDuplicate(article.doi, i) ? null :
+													<button onClick={() => handleApprove(article._id)}>
+														Approve
+													</button>
+												}
+												{ checkIfDuplicate(article.doi, i) ? null :
+													<button onClick={() => handleReject(article._id)}>
+														Reject
+													</button>
+												}
+												{ checkIfDuplicate(article.doi, i) ?
+													<button onClick={() => deleteArticle(article._id)}>
+														Delete
+													</button>
+													: null
+												}
                                             </td>
                                         </tr>
                                     );
