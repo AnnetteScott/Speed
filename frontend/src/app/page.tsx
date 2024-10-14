@@ -1,6 +1,4 @@
 "use client";
-
-=======
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { Table, Form, Container, Row, Col, Alert } from 'react-bootstrap';
