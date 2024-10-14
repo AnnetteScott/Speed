@@ -34,12 +34,9 @@ describe('SuggestArticle Component', () => {
 
     render(<SuggestArticle />);
 
-    // Creating a fake BibTeX file
     const bibFile = new Blob([`@article{sample, title={Sample Title}, doi={10.1000/xyz123}, author={John Doe, Jane Doe}, journal={Sample Journal}, year={2022}, volume={5}, number={2}, pages={12-34}}`], { type: 'application/x-bibtex' });
 
     const fileInput = screen.getByLabelText(/Upload BibTeX File/i);
-
-    // Simulate file input change inside act to handle state updates correctly
     await act(async () => {
       fireEvent.change(fileInput, { target: { files: [new File([bibFile], 'sample.bib')] } });
       fileReaderMock.onload({
@@ -48,12 +45,8 @@ describe('SuggestArticle Component', () => {
         },
       });
     });
-
-    // Ensure FileReader was used
     expect(fileReaderMock.readAsText).toHaveBeenCalledWith(expect.any(File));
     expect(parseBibtex).toHaveBeenCalledWith(fileReaderMock.result);
-
-    // Checking if the parsed data is coming up in the form fields
     expect(screen.getByDisplayValue('Sample Title')).toBeInTheDocument();
     expect(screen.getByDisplayValue('10.1000/xyz123')).toBeInTheDocument();
     expect(screen.getByDisplayValue('John Doe, Jane Doe')).toBeInTheDocument();
