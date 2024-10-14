@@ -43,7 +43,6 @@ const ModeratorPage: React.FC = () => {
                 const data: Article[] = await response.json();
                 setArticles(data);
             } catch (error) {
-                console.error("Error fetching articles:", error);
                 setError((error as Error).message);
             } finally {
                 setLoading(false);
