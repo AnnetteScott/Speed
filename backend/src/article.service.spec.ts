@@ -1,4 +1,3 @@
-// backend/src/api/articles/article.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { ArticleService } from './api/articles/article.service';
 import { getModelToken } from '@nestjs/mongoose';

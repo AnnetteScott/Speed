@@ -1,4 +1,3 @@
-// backend/src/api/articles/article.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { ArticleController } from './api/articles/article.controller';
 import { ArticleService } from './api/articles/article.service'; 
