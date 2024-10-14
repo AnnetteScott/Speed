@@ -181,16 +181,18 @@ export default function Home() {
             {/* Filtered Articles Table */}
             <Table striped bordered hover responsive>
               <thead>
-                {visibleColumns.title && <th>Title</th>}
-                {visibleColumns.doi && <th>DOI</th>}
-                {visibleColumns.authors && <th>Authors</th>}
-                {visibleColumns.source && <th>Source</th>}
-                {visibleColumns.pages && <th>Pages</th>}
-                {visibleColumns.pubYear && <th>Year</th>}
-                {visibleColumns.volume && <th>Volume</th>}
-                {visibleColumns.number && <th>Number</th>}
-                {visibleColumns.claim && <th>Claims</th>}
-                {visibleColumns.ratings && <th>Ratings</th>}
+              <tr>
+                  {visibleColumns.title && <th>Title</th>}
+                  {visibleColumns.doi && <th>DOI</th>}
+                  {visibleColumns.authors && <th>Authors</th>}
+                  {visibleColumns.source && <th>Source</th>}
+                  {visibleColumns.pages && <th>Pages</th>}
+                  {visibleColumns.pubYear && <th>Year</th>}
+                  {visibleColumns.volume && <th>Volume</th>}
+                  {visibleColumns.number && <th>Number</th>}
+                  {visibleColumns.claim && <th>Claims</th>}
+                  {visibleColumns.ratings && <th>Ratings</th>}
+                </tr>
               </thead>
               <tbody>{filtered}</tbody>
             </Table>
