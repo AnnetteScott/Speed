@@ -6,7 +6,7 @@ export class Article {
 	@Prop({ required: true })
 	title: string;
 
-	@Prop({ required: true })
+	@Prop()
 	doi: string;
 
 	@Prop()

@@ -38,10 +38,10 @@ export class ArticleController {
 	}
 
 	// Get one article via doi
-	@Get('/:doi')
-	async findOne(@Param('doi') doi: string) {
+	@Get('/:id')
+	async findOne(@Param('id') id: string) {
 		try {
-			return this.articleService.findOne(doi);
+			return this.articleService.findOne(id);
 		} catch {
 			throw new HttpException(
 				{status: HttpStatus.NOT_FOUND, error: 'No Article found'},
@@ -67,10 +67,10 @@ export class ArticleController {
 	}
 
 	// Update an Article
-	@Put('/:doi')
-	async updateArticle(@Param('doi') doi: string, @Body() articleDTO: ArticleDTO) {
+	@Put('/:id')
+	async updateArticle(@Param('id') id: string, @Body() articleDTO: ArticleDTO) {
 		try {
-			await this.articleService.update(doi, articleDTO);
+			await this.articleService.update(id, articleDTO);
 			return { message: 'Article updated successfully' };
 		} catch {
 			throw new HttpException(
@@ -109,7 +109,7 @@ export class ArticleController {
         try {
             return await this.articleService.rejectArticle(id);
         } catch (error) {
-            throw new NotFoundException(`Could not approve article with ID ${id}: ${error.message}`);
+            throw new NotFoundException(`Could not reject article with ID ${id}: ${error.message}`);
         }
     }
 }

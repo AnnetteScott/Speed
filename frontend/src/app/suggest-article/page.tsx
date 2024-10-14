@@ -83,6 +83,7 @@ export default function SuggestArticle() {
 						name="title"
 						value={article.title}
 						onChange={onChange}
+						required
 					/>
 				</label>
 				<label>
@@ -93,7 +94,6 @@ export default function SuggestArticle() {
 						placeholder="10.1000/82"
 						value={article.doi}
 						onChange={onChange}
-						required
 					/>
 				</label>
 				<label>
@@ -139,6 +139,7 @@ export default function SuggestArticle() {
 						name="pubYear"
 						value={article.pubYear}
 						onChange={onChange}
+						required
 					/>
 				</label>
 				<label>
@@ -148,6 +149,7 @@ export default function SuggestArticle() {
 						name="authors"
 						value={article.authors}
 						onChange={onChange}
+						required
 					/>
 				</label>
 
