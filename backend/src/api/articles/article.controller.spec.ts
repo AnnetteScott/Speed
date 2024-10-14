@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ArticleController } from './api/articles/article.controller';
-import { ArticleService } from './api/articles/article.service'; 
+import { ArticleController } from './article.controller';
+import { ArticleService } from './article.service'; 
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('ArticleController', () => {

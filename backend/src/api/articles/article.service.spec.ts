@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ArticleService } from './api/articles/article.service';
+import { ArticleService } from './article.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { Article } from './api/articles/articles.schema';
+import { Article } from './articles.schema';
 import { Model } from 'mongoose';
 
 const mockArticle = {
