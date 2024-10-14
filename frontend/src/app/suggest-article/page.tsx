@@ -1,8 +1,9 @@
 'use client'
+import React from 'react';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from "next/navigation";
 import NavBar from '../../components/navBar';
-import { Article, DefaultEmptyArticle } from '@/components/Article';
+import { Article, DefaultEmptyArticle } from '../../components/Article';
 import { parseBibtex } from '../../utils/bibtexParser';
 export default function SuggestArticle() {
 
@@ -68,10 +69,11 @@ export default function SuggestArticle() {
 			<NavBar />
 			<form onSubmit={onSubmit}>
 				<h3>
-					Upload BibTeX File
+				<label htmlFor="bibtex-upload">Upload BibTeX File</label>
 				</h3>
 				<input
 					type="file"
+					id="bibtex-upload" 
 					accept=".bib"
 					onChange={handleFileChange}
 				/>
