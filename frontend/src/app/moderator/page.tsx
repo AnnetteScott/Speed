@@ -43,7 +43,6 @@ const ModeratorPage: React.FC = () => {
                 const data: Article[] = await response.json();
                 setArticles(data);
             } catch (error) {
-                console.error("Error fetching articles:", error);
                 setError((error as Error).message);
             } finally {
                 setLoading(false);
@@ -54,70 +53,70 @@ const ModeratorPage: React.FC = () => {
 
 
     const checkIfDuplicate = (doi: string, index: number): boolean => {
-		const duplicates: number[] = []
-		articles.forEach((art, i) => {
-			if(art.doi === doi){
-				duplicates.push(i);
-			}
-		})
+        const duplicates: number[] = []
+        articles.forEach((art, i) => {
+            if (art.doi === doi) {
+                duplicates.push(i);
+            }
+        })
 
-		if(duplicates[0] === index){
-			return false;
-		}else if(duplicates.length > 1){
-			return true;
-		}
-        
-		return false;
+        if (duplicates[0] === index) {
+            return false;
+        } else if (duplicates.length > 1) {
+            return true;
+        }
+
+        return false;
     };
 
     const handleApprove = async (id: string | undefined) => {
-		if(!id){
-			return;
-		}
+        if (!id) {
+            return;
+        }
 
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/approvedByModerator/${id}`, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" }
-          })
+        })
             .then(() => {
-              setArticles(articles.filter(article => article._id !== id));
+                setArticles(articles.filter(article => article._id !== id));
             })
             .catch((err) => {
-              console.log('Error approving article: ' + err);
+                console.log('Error approving article: ' + err);
             });
-        
+
     };
     const handleReject = async (id: string | undefined) => {
-		if(!id){
-			return;
-		}
+        if (!id) {
+            return;
+        }
 
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/reject/${id}`, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" }
-          })
+        })
             .then(() => {
-              setArticles(articles.filter(article => article._id !== id));
+                setArticles(articles.filter(article => article._id !== id));
             })
             .catch((err) => {
-              console.log('Error rejecting article: ' + err);
+                console.log('Error rejecting article: ' + err);
             });
     };
 
     const deleteArticle = async (id: string | undefined) => {
-		if(!id){
-			return;
-		}
+        if (!id) {
+            return;
+        }
 
         fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/articles/${id}`, {
             method: 'DELETE',
             headers: { "Content-Type": "application/json" }
-          })
+        })
             .then(() => {
-              setArticles(articles.filter(article => article._id !== id));
+                setArticles(articles.filter(article => article._id !== id));
             })
             .catch((err) => {
-              console.log('Error rejecting article: ' + err);
+                console.log('Error rejecting article: ' + err);
             });
     };
 
@@ -125,8 +124,8 @@ const ModeratorPage: React.FC = () => {
     return (
         <main>
             <NavBar />
-			<br />
-			<h1 className="text-center">Articles to be Moderated</h1>
+            <br />
+            <h1 className="text-center">Articles to be Moderated</h1>
             <Container className="mt-5">
                 {error && <Alert variant="danger">{error}</Alert>}
                 {loading ? (
@@ -156,16 +155,18 @@ const ModeratorPage: React.FC = () => {
 
                         <Table striped bordered hover responsive>
                             <thead>
-                                {visibleColumns.title && <th>Title</th>}
-                                {visibleColumns.doi && <th>DOI</th>}
-                                {visibleColumns.authors && <th>Authors</th>}
-                                {visibleColumns.source && <th>Source</th>}
-                                {visibleColumns.pages && <th>Pages</th>}
-                                {visibleColumns.pubYear && <th>Year</th>}
-                                {visibleColumns.volume && <th>Volume</th>}
-                                {visibleColumns.number && <th>Number</th>}
-                                {visibleColumns.note && <th>Note</th>}
-                                <th>Actions</th>
+                                <tr>
+                                    {visibleColumns.title && <th>Title</th>}
+                                    {visibleColumns.doi && <th>DOI</th>}
+                                    {visibleColumns.authors && <th>Authors</th>}
+                                    {visibleColumns.source && <th>Source</th>}
+                                    {visibleColumns.pages && <th>Pages</th>}
+                                    {visibleColumns.pubYear && <th>Year</th>}
+                                    {visibleColumns.volume && <th>Volume</th>}
+                                    {visibleColumns.number && <th>Number</th>}
+                                    {visibleColumns.note && <th>Note</th>}
+                                    <th>Actions</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {articles.map((article, i) => {
@@ -186,22 +187,22 @@ const ModeratorPage: React.FC = () => {
                                             {visibleColumns.number && <td>{article.number}</td>}
                                             {visibleColumns.note && <td>{note}</td>}
                                             <td>
-												{ checkIfDuplicate(article.doi, i) ? null :
-													<button onClick={() => handleApprove(article._id)}>
-														Approve
-													</button>
-												}
-												{ checkIfDuplicate(article.doi, i) ? null :
-													<button onClick={() => handleReject(article._id)}>
-														Reject
-													</button>
-												}
-												{ checkIfDuplicate(article.doi, i) ?
-													<button onClick={() => deleteArticle(article._id)}>
-														Delete
-													</button>
-													: null
-												}
+                                                {checkIfDuplicate(article.doi, i) ? null :
+                                                    <button onClick={() => handleApprove(article._id)}>
+                                                        Approve
+                                                    </button>
+                                                }
+                                                {checkIfDuplicate(article.doi, i) ? null :
+                                                    <button onClick={() => handleReject(article._id)}>
+                                                        Reject
+                                                    </button>
+                                                }
+                                                {checkIfDuplicate(article.doi, i) ?
+                                                    <button onClick={() => deleteArticle(article._id)}>
+                                                        Delete
+                                                    </button>
+                                                    : null
+                                                }
                                             </td>
                                         </tr>
                                     );
