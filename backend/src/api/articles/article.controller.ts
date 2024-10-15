@@ -4,6 +4,7 @@ import { Body, Controller, Delete, Get,
 import { ArticleService } from './article.service';
 import ArticleDTO from './article.dto';
 import { error } from 'console';
+import { retry } from 'rxjs';
   
 @Controller('api/articles')
 export class ArticleController {
@@ -125,4 +126,18 @@ export class ArticleController {
             );
         }
 }
+@Get('/methods')
+async getMethods(){
+	console.log("hello");
+	try{
+		return await this.articleService.getMethods();
+	}catch(error){
+		throw new HttpException(
+			{ status: HttpStatus.BAD_REQUEST, error: 'Invalid SE Method' },
+			HttpStatus.BAD_REQUEST,
+			{ cause: error }
+		);
+	}
+}
+
 }

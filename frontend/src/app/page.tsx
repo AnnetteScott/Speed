@@ -1,8 +1,6 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
-import NavBar from "../components/navBar";
 import { useState, ChangeEvent, useEffect } from "react";
+import NavBar from "../components/navBar";
 import { Article } from "@/components/Article";
 
 export default function Home() {
@@ -12,6 +10,7 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedMethod, setSelectedMethod] = useState<string>(""); // State for selected SE method
   const [claims, setClaims] = useState<string[]>([]); // State for claims associated with the selected method
+  const [methods, setMethods] = useState<string[]>([]); // State for available SE methods
 
   // Event to detect user input
   function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -33,10 +32,10 @@ export default function Home() {
 
     // Fetch claims for the selected method
     if (method) {
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/claims?method=${method}`)
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/claims/${method}`)
         .then((res) => res.json())
         .then((data) => {
-          setClaims(data.claims || []); // Assuming the response contains an array of claims
+          setClaims(data || []); // Assuming the response contains an array of claims
         })
         .catch((err) => {
           console.log("Error fetching claims: " + err);
@@ -46,6 +45,18 @@ export default function Home() {
       setClaims([]); // Reset claims if no method is selected
     }
   }
+
+  // Fetch available SE methods
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/articles/methods`)
+      .then((res) => res.json())
+      .then((data) => {
+        setMethods(data || []); // Assuming the response contains an array of methods
+      })
+      .catch((err) => {
+        console.log("Error fetching methods: " + err);
+      });
+  }, []);
 
   const filtered = articles
     .filter((a) => a?.title.toLowerCase().includes(search.toLowerCase()) || a?.doi.toLowerCase().includes(search.toLowerCase()))
@@ -92,10 +103,9 @@ export default function Home() {
         Select SE Method:
         <select value={selectedMethod} onChange={handleMethodChange}>
           <option value="">--Select Method--</option>
-          {/* This would ideally be dynamically populated from the backend as well */}
-          <option value="SEMETHOD1">SEMETHOD1</option>
-          <option value="SEMETHOD2">SEMETHOD2</option>
-          <option value="SEMETHOD7">SEMETHOD7</option>
+          {methods.map((method, index) => (
+            <option key={index} value={method}>{method}</option>
+          ))}
         </select>
       </label>
       {claims.length > 0 && (

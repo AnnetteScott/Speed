@@ -50,21 +50,47 @@ export class ArticleService {
         return article;
     }
 	
-//
+
 async getClaimsByMethod(method: string): Promise<string[] | null> {
     // Fetch all articles or claims configuration from your data source
     const articles = await this.articleModel.find().exec(); 
-
+    console.log('Articles:', articles);
+   
+  
     // Flatten the claimsByMethod from all articles into a single array
     const claimsByMethod = articles.flatMap(article => 
-        article.claimsByMethod || []
+      article.claimsByMethod || []
     );
-
+    
+  
     // Find the claims associated with the specified SE method
     const methodClaims = claimsByMethod.find((entry: { method: string; claims: string[] }) => entry.method === method);
-
+    
+  
     // Return the claims if found, otherwise return null
     return methodClaims ? methodClaims.claims : null;
-}
+  }
+
+  async getMethods(): Promise<string[] | null> {
+    console.log('getMethods function called');
+    const articles = await this.articleModel.find().exec();
+    console.log('Articles:', articles);
+  
+    // Flatten the claimsByMethod from all articles into a single array
+    const claimsByMethod = articles.flatMap(article => 
+      article.claimsByMethod || []
+    );
+    console.log('claimsByMethod:', claimsByMethod);
+  
+    // Extract all methods
+    const methods = claimsByMethod.map(entry => entry.method);
+    console.log('methods:', methods);
+  
+    // Remove duplicates by converting to a Set and back to an array
+    const uniqueMethods = Array.from(new Set(methods));
+    console.log('uniqueMethods:', uniqueMethods);
+    return uniqueMethods;
+  }
+  
 
 }
